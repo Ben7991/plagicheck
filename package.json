@@ -1,0 +1,17 @@
+{
+  "name": "plagiarism-checker",
+  "version": "1.0.0",
+  "main": "index.js",
+  "private": true,
+  "scripts": {
+    "start:dev-web": "turbo run start:dev --filter client"
+  },
+  "packageManager": "npm@10.8.2",
+  "workspaces": [
+    "apps/*",
+    "packages/*"
+  ],
+  "devDependencies": {
+    "turbo": "^2.3.3"
+  }
+}
