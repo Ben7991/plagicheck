@@ -1,5 +1,6 @@
 export default () => ({
   port: process.env.PORT,
+  secret: process.env.SECRET,
   db: {
     host: process.env.DB_HOST,
     port: process.env.DB_PORT,
