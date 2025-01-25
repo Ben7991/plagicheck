@@ -6,6 +6,7 @@ import { AppController } from './app.controller';
 import { AppService } from './app.service';
 import { SeederModule } from './seeder/seeder.module';
 import { AuthModule } from './auth/auth.module';
+import { UsersModule } from './users/users.module';
 import envConfig from './config/env.config';
 
 @Module({
@@ -30,6 +31,7 @@ import envConfig from './config/env.config';
     }),
     SeederModule,
     AuthModule,
+    UsersModule,
   ],
   controllers: [AppController],
   providers: [AppService],
