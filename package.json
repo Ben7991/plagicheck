@@ -3,7 +3,10 @@
   "version": "1.0.0",
   "packageManager": "npm@10.8.0",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start:dev": "turbo run start:dev",
+    "start:dev-client": "turbo run start:dev --filter=client",
+    "start:dev-server": "turbo run start:dev --filter=server"
   },
   "workspaces": [
     "apps/*",
