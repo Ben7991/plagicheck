@@ -5,6 +5,7 @@ import { TypeOrmModule } from '@nestjs/typeorm';
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
 import { SeederModule } from './seeder/seeder.module';
+import { AuthModule } from './auth/auth.module';
 import envConfig from './config/env.config';
 
 @Module({
@@ -28,6 +29,7 @@ import envConfig from './config/env.config';
       }),
     }),
     SeederModule,
+    AuthModule,
   ],
   controllers: [AppController],
   providers: [AppService],
