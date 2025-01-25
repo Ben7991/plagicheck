@@ -35,6 +35,12 @@ export class UserEntity {
   phone: string;
 
   @Column({
+    type: 'varchar',
+    nullable: true,
+  })
+  imagePath: string;
+
+  @Column({
     type: 'enum',
     enum: Role,
   })
