@@ -4,6 +4,7 @@ import { TypeOrmModule } from '@nestjs/typeorm';
 
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
+import { SeederModule } from './seeder/seeder.module';
 import envConfig from './config/env.config';
 
 @Module({
@@ -26,6 +27,7 @@ import envConfig from './config/env.config';
         synchronize: true,
       }),
     }),
+    SeederModule,
   ],
   controllers: [AppController],
   providers: [AppService],
