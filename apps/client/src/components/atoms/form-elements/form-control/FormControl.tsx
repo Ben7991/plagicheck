@@ -3,11 +3,16 @@ import { forwardRef } from 'react';
 import { FormControlProps } from './form-control.util';
 
 const FormControl = forwardRef<HTMLInputElement, FormControlProps>(
-  ({ leftIcon, rightIcon, ...props }: FormControlProps, ref): JSX.Element => {
+  (
+    { hasError, leftIcon, rightIcon, ...props }: FormControlProps,
+    ref,
+  ): JSX.Element => {
     const { className, ...remainingProps } = props;
 
     return (
-      <div className="flex items-center py-[10px] px-4 border border-[var(--gray-700)] rounded-lg gap-2">
+      <div
+        className={`flex items-center py-[10px] px-4 border rounded-lg gap-2 ${hasError ? 'border-[var(--error-100)]' : 'border-[var(--gray-700)]'}`}
+      >
         {leftIcon}
         <input
           {...remainingProps}
