@@ -1,9 +1,4 @@
-import { ReactNode } from 'react';
-
-type FormFooderProps = {
-  children: ReactNode;
-  className?: string;
-};
+import { FormFooderProps } from './form-footer.util';
 
 export default function FormFooter({
   children,
