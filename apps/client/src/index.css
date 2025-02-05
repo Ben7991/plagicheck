@@ -1,6 +1,6 @@
 :root {
-  --font-archivo: "Archivo";
-  --font-holtwood: "Holtwood One SC";
+  --font-archivo: 'Archivo';
+  --font-holtwood: 'Holtwood One SC';
   --fw-regular: 400;
   --fw-semibold: 500;
   --fw-bold: 700;
@@ -17,20 +17,35 @@
   --gray-700: #a6a6ab;
   --gray-900: #d2d3d5;
   --gray-1000: #e9e9ea;
+
+  --black-200: #1a1a2a;
+  --black-300: #333441;
 }
 
-@import "tailwindcss";
+@import 'tailwindcss';
 
 body {
-  font-family: var(--font-archivo), "sans-serif";
+  font-family: var(--font-archivo), 'sans-serif';
   font-weight: var(--fw-regular);
   box-sizing: border-box;
+  color: var(--black-300);
 }
 
 *,
 *::before,
 *::after {
   box-sizing: border-box;
-  margin: 0;
-  padding: 0;
+}
+
+.font-holtwood {
+  font-family: var(--font-holtwood);
+}
+
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
+  color: var(--black-200);
 }
