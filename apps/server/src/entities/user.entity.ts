@@ -2,6 +2,7 @@ import { Entity, PrimaryColumn, Column } from 'typeorm';
 
 import { AccountStatus } from 'src/utils/enums/account-status.enum';
 import { Role } from 'src/utils/enums/role.enum';
+import { Exclude } from 'class-transformer';
 
 @Entity({ name: 'users' })
 export class UserEntity {
@@ -23,6 +24,7 @@ export class UserEntity {
   })
   email: string;
 
+  @Exclude()
   @Column({
     type: 'varchar',
   })
@@ -46,6 +48,7 @@ export class UserEntity {
   })
   role: Role;
 
+  @Exclude()
   @Column({
     type: 'enum',
     name: 'account_status',

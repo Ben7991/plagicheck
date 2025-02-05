@@ -1,4 +1,12 @@
-import { Body, Controller, Post, Res, ValidationPipe } from '@nestjs/common';
+import {
+  Body,
+  ClassSerializerInterceptor,
+  Controller,
+  Post,
+  Res,
+  UseInterceptors,
+  ValidationPipe,
+} from '@nestjs/common';
 import { ApiTags } from '@nestjs/swagger';
 
 import { AuthService } from './auth.service';
@@ -10,6 +18,7 @@ import { Response } from 'express';
 export class AuthController {
   constructor(private authService: AuthService) {}
 
+  @UseInterceptors(ClassSerializerInterceptor)
   @Post('login')
   async login(
     @Body(ValidationPipe) body: LoginDto,

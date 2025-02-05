@@ -41,11 +41,9 @@ export class AuthService {
         throw new BadRequestException('Wrong credentials');
       }
 
-      // eslint-disable-next-line @typescript-eslint/no-unused-vars
-      const { password, accountStatus, ...remainingProps } = existingUser;
       const token = await this.createAuthToken(existingUser);
 
-      return { data: remainingProps, token };
+      return { data: existingUser, token };
     } catch (error) {
       if (error instanceof BadRequestException) {
         throw new BadRequestException(error.message);
