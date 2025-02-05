@@ -1,15 +1,6 @@
-import type { ComponentPropsWithoutRef } from 'react';
 import { Link } from 'react-router-dom';
 
-type AnchorProps = {
-  el: 'link';
-  variant: 'primary' | 'danger' | 'secondary';
-} & ComponentPropsWithoutRef<'a'>;
-
-type ButtonProps = {
-  el: 'button';
-  variant: 'primary' | 'danger' | 'secondary';
-} & ComponentPropsWithoutRef<'button'>;
+import { AnchorProps, ButtonProps } from './button.util';
 
 export default function Button(props: ButtonProps | AnchorProps): JSX.Element {
   let variantStyle = '';
