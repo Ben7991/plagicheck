@@ -1,10 +1,14 @@
 import { useState } from 'react';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import { SubmitHandler, useForm } from 'react-hook-form';
 import { yupResolver } from '@hookform/resolvers/yup';
 
-import { schema } from './login.util';
+import { schema, signIn } from './login.util';
 import { Inputs } from './login.util';
+import { AlertVariant } from '../../../util/enum/alert-variant.enum';
+import { useAlert } from '../../../util/hooks/use-alert/useAlert';
+import { useAppDispatch } from '../../../store/store.util';
+import { setAuthUser } from '../../../store/slice/auth/auth.slice';
 import FormControl from '../../../components/atoms/form-elements/form-control/FormControl';
 import FormGroup from '../../../components/atoms/form-elements/form-group/FormGroup';
 import Label from '../../../components/atoms/form-elements/label/Label';
@@ -15,29 +19,57 @@ import FormFooter from '../../../components/atoms/form-elements/form-footer/Form
 import Button from '../../../components/atoms/button/Button';
 import PasswordToggler from '../../../components/molecules/password-toggler/PasswordToggler';
 import FormControlError from '../../../components/atoms/form-elements/form-control-error/FormControlError';
+import Alert from '../../../components/molecules/alert/Alert';
 
 export default function Login(): JSX.Element {
+  const dispatch = useAppDispatch();
+  const navigate = useNavigate();
+  const { alertState, alertInfo, hideAlert, setAlertInfo, showAlert } =
+    useAlert();
+  const [isLoading, setIsLoading] = useState(false);
   const [showPassword, setShowPassword] = useState(false);
   const {
     register,
     handleSubmit,
     formState: { errors },
+    reset,
   } = useForm<Inputs>({
     resolver: yupResolver(schema),
     mode: 'onBlur',
   });
 
-  const onSubmit: SubmitHandler<Inputs> = (data) => {
-    console.log(data);
+  const onSubmit: SubmitHandler<Inputs> = async (data) => {
+    setIsLoading(true);
+
+    try {
+      const result = await signIn(data);
+      dispatch(setAuthUser(result.data));
+      reset();
+      navigate('/dashboard');
+    } catch (error) {
+      const message = (error as Error).message;
+      console.error(message);
+      setAlertInfo({ message, variant: AlertVariant.ERROR });
+    }
+
+    setIsLoading(false);
+    showAlert();
   };
 
   return (
     <>
+      {alertState && alertInfo && (
+        <Alert
+          message={alertInfo.message}
+          variant={alertInfo.variant}
+          onHide={hideAlert}
+        />
+      )}
       <AuthDescriptor
         title="Login"
         info="Please enter your login details below to access your account"
       />
-      <form onSubmit={handleSubmit(onSubmit)} role="login-form">
+      <form onSubmit={handleSubmit(onSubmit)} role="form">
         <FormGroup className="mb-4">
           <Label htmlFor="username">Email / ID</Label>
           <FormControl
@@ -84,8 +116,13 @@ export default function Login(): JSX.Element {
           </Link>
         </div>
         <FormFooter className="flex-col">
-          <Button el="button" variant="primary" type="submit">
-            Login
+          <Button
+            el="button"
+            variant="primary"
+            type="submit"
+            disabled={isLoading}
+          >
+            {isLoading ? 'Loading...' : 'Login'}
           </Button>
         </FormFooter>
       </form>
