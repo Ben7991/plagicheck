@@ -1,4 +1,7 @@
+import { AlertVariant } from '../../../util/enum/alert-variant.enum';
+
 export type AlertProps = {
   message: string;
-  variant: 'success' | 'error';
+  variant: AlertVariant;
+  onHide: VoidFunction;
 };
