@@ -8,6 +8,8 @@ global.TextEncoder = TextEncoder;
 import { MemoryRouter } from 'react-router-dom';
 import Login from './Login';
 import { FormEvent } from 'react';
+import { Provider } from 'react-redux';
+import { store } from '../../../store/store';
 
 afterEach(cleanup);
 
@@ -32,7 +34,9 @@ describe('Login.tsx', () => {
   it('should render Login component', () => {
     render(
       <MemoryRouter>
-        <Login />
+        <Provider store={store}>
+          <Login />
+        </Provider>
       </MemoryRouter>,
     );
     const appNameElement = screen.getByRole('heading', {
@@ -44,7 +48,9 @@ describe('Login.tsx', () => {
   it('should ensure that the password can be viewed when the eye button is clicked', async () => {
     const { container } = render(
       <MemoryRouter>
-        <Login />
+        <Provider store={store}>
+          <Login />
+        </Provider>
       </MemoryRouter>,
     );
     const eyeButton = container.querySelector(
@@ -61,7 +67,9 @@ describe('Login.tsx', () => {
   it('should not submit the form when the input fields are empty', async () => {
     render(
       <MemoryRouter>
-        <Login />
+        <Provider store={store}>
+          <Login />
+        </Provider>
       </MemoryRouter>,
     );
     const emailInput = screen.getByPlaceholderText(/your email/i);
@@ -75,7 +83,7 @@ describe('Login.tsx', () => {
     const submitButton = screen.getByRole('button', {
       name: /login/i,
     });
-    const formElement = screen.getByRole('login-form');
+    const formElement = screen.getByRole('form');
     formElement.onsubmit = mockHandleSubmit;
 
     await userEvent.click(submitButton);
@@ -85,7 +93,9 @@ describe('Login.tsx', () => {
   it('should submit the form when the input fields are not empty', async () => {
     render(
       <MemoryRouter>
-        <Login />
+        <Provider store={store}>
+          <Login />
+        </Provider>
       </MemoryRouter>,
     );
     const emailInput = screen.getByPlaceholderText(/your email/i);
@@ -100,7 +110,7 @@ describe('Login.tsx', () => {
       name: /login/i,
     });
 
-    const form = screen.getByRole('login-form');
+    const form = screen.getByRole('form');
     form.onsubmit = mockHandleSubmit;
 
     await userEvent.click(submitButton);
