@@ -9,3 +9,21 @@ export const schema = yup.object({
   username: yup.string().required('Email/ID is required').trim(),
   password: yup.string().required('Password is required').trim(),
 });
+
+export async function signIn(data: Inputs) {
+  const response = await fetch('http://localhost:3000/api/auth/login', {
+    method: 'POST',
+    body: JSON.stringify(data),
+    headers: {
+      'Content-Type': 'application/json',
+    },
+    credentials: 'include',
+  });
+  const result = await response.json();
+
+  if (!response.ok) {
+    throw new Error(result.message || 'Something went wrong');
+  }
+
+  return result;
+}
