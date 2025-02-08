@@ -18,6 +18,7 @@
 
   --gray-100: #fafafb;
   --gray-700: #a6a6ab;
+  --gray-800: #bcbcc0;
   --gray-900: #d2d3d5;
   --gray-1000: #e9e9ea;
 
@@ -51,4 +52,8 @@ h4,
 h5,
 h6 {
   color: var(--black-200);
+}
+
+.nav-link-active svg {
+  stroke: #fff;
 }
