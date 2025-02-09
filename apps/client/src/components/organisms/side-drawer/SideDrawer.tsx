@@ -13,6 +13,7 @@ import GearIcon from '../../atoms/icons/GearIcon';
 import LogoutIcon from '../../atoms/icons/LogoutIcon';
 import SearchIcon from '../../atoms/icons/SearchIcon';
 import ClockIcon from '../../atoms/icons/ClockIcon';
+import UserProfile from '../../molecules/user-profile/UserProfile';
 
 export default function SideDrawer({ show }: SideDrawerProps) {
   const [showDropDown, setShowDropDown] = useState(false);
@@ -47,12 +48,13 @@ export default function SideDrawer({ show }: SideDrawerProps) {
 
   return (
     <aside
-      className={`w-0 bg-[var(--gray-1000)] border-r border-r-[var(--gray-800)] fixed top-0 left-0 h-screen lg:static lg:basis-[270px] lg:py-12 xl:py-14 overflow-y-auto transition-[width] ${show && 'w-2/3 overflow-x-hidden py-10'}`}
+      className={`w-0 bg-[var(--gray-1000)] border-r border-r-[var(--gray-800)] fixed top-0 left-0 h-screen lg:static lg:basis-[270px] lg:py-12 xl:py-14 overflow-y-auto transition-[width] ${show && 'w-2/3 md:w-[300px] overflow-x-hidden py-10'}`}
     >
-      <div className="flex justify-center mb-10 lg:mb-16 xl:mb-[91.45px]">
-        <AppLogo />
+      <div className="flex justify-center mb-10 lg:mb-10 xl:mb-[91.45px]">
+        <AppLogo className="hidden lg:flex" />
+        <UserProfile className="lg:hidden" />
       </div>
-      <div className="flex flex-col gap-4 px-[25px] mb-20 lg:mb-5 xl:mb-40 2xl:mb-[205.12px]">
+      <div className="flex flex-col gap-4 px-[25px] mb-20 lg:mb-15 xl:mb-40 2xl:mb-[205.12px]">
         <NavLink to="/dashboard" className={navLinkClass} end>
           <DashboardIcon /> Dashboard
         </NavLink>
