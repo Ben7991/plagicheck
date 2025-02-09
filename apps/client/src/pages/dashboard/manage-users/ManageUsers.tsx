@@ -1,3 +1,10 @@
+import PageHeader from '../../../components/organisms/page-header/PageHeader';
+
 export default function ManageUsers() {
-  return <h1>ManageUsers</h1>;
+  return (
+    <>
+      <PageHeader />
+      <h1>ManageUsers</h1>
+    </>
+  );
 }

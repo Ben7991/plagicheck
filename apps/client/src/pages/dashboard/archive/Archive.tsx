@@ -1,3 +1,10 @@
+import PageHeader from '../../../components/organisms/page-header/PageHeader';
+
 export default function Archive() {
-  return <h1>Archive</h1>;
+  return (
+    <>
+      <PageHeader />
+      <h1>Archive</h1>
+    </>
+  );
 }

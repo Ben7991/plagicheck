@@ -1,3 +1,10 @@
+import PageHeader from '../../../components/organisms/page-header/PageHeader';
+
 export default function AcademicDivision() {
-  return <h1>AcademicDivision</h1>;
+  return (
+    <>
+      <PageHeader />
+      <h1>AcademicDivision</h1>
+    </>
+  );
 }

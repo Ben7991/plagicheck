@@ -1,3 +1,10 @@
+import PageHeader from '../../../../components/organisms/page-header/PageHeader';
+
 export default function History() {
-  return <h1>History</h1>;
+  return (
+    <>
+      <PageHeader />
+      <h1>History</h1>
+    </>
+  );
 }
