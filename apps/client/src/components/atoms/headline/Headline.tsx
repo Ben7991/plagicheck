@@ -18,5 +18,7 @@ export default function Headline({
           {children}
         </h4>
       );
+    case 'h5':
+      return <h5 className={`font-semibold ${className}`}>{children}</h5>;
   }
 }
