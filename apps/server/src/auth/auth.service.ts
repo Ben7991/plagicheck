@@ -54,19 +54,54 @@ export class AuthService {
   }
 
   private async createAuthToken(user: UserEntity) {
-    const saltRounds = 10;
-    const hashedId = await bcryptjs.hash(user.id, saltRounds);
-    const accessToken = jwt.sign({ sub: hashedId }, this.secretKey, {
+    const accessToken = jwt.sign({ sub: user.id }, this.secretKey, {
       expiresIn: '15m',
     });
 
-    const hashedPassword = await bcryptjs.hash(user.email, saltRounds);
+    const saltRounds = 10;
+    const hashedEmail = await bcryptjs.hash(user.email, saltRounds);
     const refreshToken = jwt.sign(
-      { sub: hashedId, email: hashedPassword },
+      { sub: user.id, email: hashedEmail },
       this.secretKey,
       { expiresIn: '30d' },
     );
 
     return { accessToken, refreshToken };
+  }
+
+  async validateToken(refreshToken: string) {
+    try {
+      const result = jwt.verify(refreshToken, this.secretKey) as unknown as {
+        sub: string;
+        email: string;
+      };
+      const existingUser = await this.dataSource
+        .createQueryBuilder(UserEntity, 'users')
+        .where({ id: result.sub })
+        .getOne();
+
+      if (!existingUser) {
+        throw new BadRequestException('Invalid token');
+      }
+
+      const isRightEmail = await bcryptjs.compare(
+        existingUser.email,
+        result.email,
+      );
+
+      if (!isRightEmail) {
+        throw new BadRequestException('Invalid token');
+      }
+
+      const token = await this.createAuthToken(existingUser);
+
+      return { data: existingUser, token };
+    } catch (error) {
+      if (error instanceof BadRequestException) {
+        throw new BadRequestException(error.message);
+      }
+
+      throw new InternalServerErrorException('Something went wrong');
+    }
   }
 }
