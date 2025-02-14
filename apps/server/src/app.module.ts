@@ -8,6 +8,7 @@ import { AppService } from './app.service';
 import { SeederModule } from './seeder/seeder.module';
 import { AuthModule } from './auth/auth.module';
 import { UsersModule } from './users/users.module';
+import { MailerModule } from './mailer/mailer.module';
 import envConfig from './config/env.config';
 
 @Module({
@@ -34,6 +35,7 @@ import envConfig from './config/env.config';
     SeederModule,
     AuthModule,
     UsersModule,
+    MailerModule,
   ],
   controllers: [AppController],
   providers: [AppService],
