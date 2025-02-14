@@ -13,6 +13,7 @@ import ManageUsers from './pages/dashboard/manage-users/ManageUsers';
 import Checker from './pages/dashboard/plagiarism-checker/checker/Checker';
 import Schedule from './pages/dashboard/plagiarism-checker/schedule/Schedule';
 import History from './pages/dashboard/plagiarism-checker/history/History';
+import CheckRememberMe from './pages/auth/login/CheckRememberMe';
 
 export default function App() {
   const appRouter = createBrowserRouter([
@@ -20,7 +21,14 @@ export default function App() {
       path: '/',
       element: <AuthLayout />,
       children: [
-        { index: true, element: <Login /> },
+        {
+          index: true,
+          element: (
+            <CheckRememberMe>
+              <Login />
+            </CheckRememberMe>
+          ),
+        },
         { path: 'forgot-password', element: <ForgotPassword /> },
         { path: 'reset-password', element: <ResetPassword /> },
       ],

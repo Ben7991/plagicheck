@@ -3,7 +3,7 @@ import { Link, useNavigate } from 'react-router-dom';
 import { SubmitHandler, useForm } from 'react-hook-form';
 import { yupResolver } from '@hookform/resolvers/yup';
 
-import { schema, signIn } from './login.util';
+import { schema, setRememberMe, signIn } from './login.util';
 import { Inputs } from './login.util';
 import { AlertVariant } from '../../../util/enum/alert-variant.enum';
 import { useAlert } from '../../../util/hooks/use-alert/useAlert';
@@ -45,6 +45,11 @@ export default function Login(): JSX.Element {
       const result = await signIn(data);
       dispatch(setAuthUser(result.data));
       reset();
+
+      if (data.rememberMe) {
+        setRememberMe();
+      }
+
       navigate('/dashboard');
     } catch (error) {
       const message = (error as Error).message;
@@ -106,7 +111,12 @@ export default function Login(): JSX.Element {
         </FormGroup>
         <div className="flex justify-between mb-4">
           <label className="flex gap-2 items-center select-none">
-            <input type="checkbox" className="w-[16px] h-[16px]" /> Remember me
+            <input
+              type="checkbox"
+              className="w-[16px] h-[16px]"
+              {...register('rememberMe')}
+            />{' '}
+            Remember me
           </label>
           <Link
             to="/forgot-password"
