@@ -24,3 +24,14 @@ export const schema = yup.object({
     })
     .trim(),
 });
+
+export async function validateResetToken(token: string | null) {
+  const response = await fetch(
+    `http://localhost:3000/api/auth/validate-reset-token?token=${token}`,
+  );
+  const result = await response.json();
+
+  if (!response.ok) {
+    throw new Error(result.message);
+  }
+}
