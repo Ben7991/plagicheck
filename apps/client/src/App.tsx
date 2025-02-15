@@ -14,6 +14,7 @@ import Checker from './pages/dashboard/plagiarism-checker/checker/Checker';
 import Schedule from './pages/dashboard/plagiarism-checker/schedule/Schedule';
 import History from './pages/dashboard/plagiarism-checker/history/History';
 import CheckRememberMe from './pages/auth/login/CheckRememberMe';
+import CheckResetToken from './pages/auth/reset-password/CheckResetToken';
 
 export default function App() {
   const appRouter = createBrowserRouter([
@@ -30,7 +31,14 @@ export default function App() {
           ),
         },
         { path: 'forgot-password', element: <ForgotPassword /> },
-        { path: 'reset-password', element: <ResetPassword /> },
+        {
+          path: 'reset-password',
+          element: (
+            <CheckResetToken>
+              <ResetPassword />
+            </CheckResetToken>
+          ),
+        },
       ],
     },
     {
