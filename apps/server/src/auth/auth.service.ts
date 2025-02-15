@@ -142,4 +142,13 @@ export class AuthService {
       };
     }
   }
+
+  validateResetToken(token: string) {
+    try {
+      jwt.verify(token, this.secretKey);
+      return { code: 'SUCCESS' };
+    } catch {
+      throw new BadRequestException('Invalid token');
+    }
+  }
 }

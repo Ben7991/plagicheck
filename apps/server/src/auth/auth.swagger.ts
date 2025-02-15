@@ -38,3 +38,11 @@ export const swaggerRequestPasswordResetResponse = {
     message: 'Please check your email to complete the process',
   },
 };
+
+export const swaggerValidateResetTokenResponse = {
+  status: HttpStatus.OK,
+  description: 'OK',
+  example: {
+    code: 'SUCCESS',
+  },
+};

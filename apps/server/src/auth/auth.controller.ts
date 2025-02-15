@@ -1,4 +1,5 @@
 import {
+  BadRequestException,
   Body,
   ClassSerializerInterceptor,
   Controller,
@@ -6,6 +7,7 @@ import {
   HttpCode,
   HttpStatus,
   Post,
+  Query,
   Req,
   Res,
   UseInterceptors,
@@ -20,6 +22,7 @@ import {
   swaggerLoginResponse,
   swaggerRequestPasswordResetResponse,
   swaggerValidateRefreshTokenResponse,
+  swaggerValidateResetTokenResponse,
 } from './auth.swagger';
 import { RequestPasswordReset } from './dto/request-password-reset.dto';
 
@@ -84,5 +87,15 @@ export class AuthController {
   @HttpCode(HttpStatus.OK)
   requestPasswordReset(@Body(ValidationPipe) body: RequestPasswordReset) {
     return this.authService.requestPasswordReset(body.email);
+  }
+
+  @ApiResponse(swaggerValidateResetTokenResponse)
+  @Get('validate-reset-token')
+  validateResetToken(@Query('token') token: string) {
+    if (!token) {
+      throw new BadRequestException('Invalid token');
+    }
+
+    return this.authService.validateResetToken(token);
   }
 }
