@@ -15,4 +15,11 @@ export default () => ({
     password: process.env.ADMIN_PASSWORD,
     phone: process.env.ADMIN_PHONE,
   },
+  mailer: {
+    host: process.env.MAIL_HOST,
+    port: parseInt(process.env.MAIL_PORT!),
+    address: process.env.MAIL_ADDRESS,
+    name: process.env.MAIL_NAME,
+    password: process.env.MAIL_PASSWORD,
+  },
 });
