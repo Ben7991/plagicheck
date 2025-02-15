@@ -12,6 +12,10 @@ export default function Headline({
   children,
 }: HeadlineProps): JSX.Element | undefined {
   switch (type) {
+    case 'h3':
+      return (
+        <h3 className={`font-semibold ${className} text-2xl`}>{children}</h3>
+      );
     case 'h4':
       return (
         <h4 className={`font-semibold ${className} text-[1.2em]`}>
