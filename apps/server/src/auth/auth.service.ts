@@ -72,7 +72,7 @@ export class AuthService {
     return { accessToken, refreshToken };
   }
 
-  async validateToken(refreshToken: string) {
+  async validateRefreshToken(refreshToken: string) {
     try {
       const result = jwt.verify(refreshToken, this.secretKey) as unknown as {
         sub: string;

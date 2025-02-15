@@ -18,7 +18,8 @@ import { AuthService } from './auth.service';
 import { LoginDto } from './dto/login.dto';
 import {
   swaggerLoginResponse,
-  swaggerValidateTokenResponse,
+  swaggerRequestPasswordResetResponse,
+  swaggerValidateRefreshTokenResponse,
 } from './auth.swagger';
 import { RequestPasswordReset } from './dto/request-password-reset.dto';
 
@@ -63,22 +64,24 @@ export class AuthController {
     });
   }
 
-  @ApiResponse(swaggerValidateTokenResponse)
+  @ApiResponse(swaggerValidateRefreshTokenResponse)
   @UseInterceptors(ClassSerializerInterceptor)
   @Get('validate-token')
-  async validateToken(
+  async validateRefreshToken(
     @Req() req: Request,
     @Res({ passthrough: true }) res: Response,
   ) {
     const refreshToken = req.cookies['_ref-tk'] as string;
-    const result = await this.authService.validateToken(refreshToken);
+    const result = await this.authService.validateRefreshToken(refreshToken);
 
     this.setAuthCookie(res, result.token);
 
     return { data: result.data };
   }
 
+  @ApiResponse(swaggerRequestPasswordResetResponse)
   @Post('request-password-reset')
+  @HttpCode(HttpStatus.OK)
   requestPasswordReset(@Body(ValidationPipe) body: RequestPasswordReset) {
     return this.authService.requestPasswordReset(body.email);
   }

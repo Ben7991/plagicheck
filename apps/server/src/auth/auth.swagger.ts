@@ -16,7 +16,7 @@ export const swaggerLoginResponse = {
   },
 };
 
-export const swaggerValidateTokenResponse = {
+export const swaggerValidateRefreshTokenResponse = {
   status: HttpStatus.OK,
   description: 'OK',
   example: {
@@ -28,5 +28,13 @@ export const swaggerValidateTokenResponse = {
       imagePath: null,
       role: '******',
     },
+  },
+};
+
+export const swaggerRequestPasswordResetResponse = {
+  status: HttpStatus.OK,
+  description: 'OK',
+  example: {
+    message: 'Please check your email to complete the process',
   },
 };
