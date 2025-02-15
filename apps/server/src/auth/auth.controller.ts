@@ -20,6 +20,7 @@ import {
   swaggerLoginResponse,
   swaggerValidateTokenResponse,
 } from './auth.swagger';
+import { RequestPasswordReset } from './dto/request-password-reset.dto';
 
 @Controller('auth')
 @ApiTags('Auth')
@@ -75,5 +76,10 @@ export class AuthController {
     this.setAuthCookie(res, result.token);
 
     return { data: result.data };
+  }
+
+  @Post('request-password-reset')
+  requestPasswordReset(@Body(ValidationPipe) body: RequestPasswordReset) {
+    return this.authService.requestPasswordReset(body.email);
   }
 }
