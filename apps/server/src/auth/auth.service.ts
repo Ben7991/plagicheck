@@ -136,11 +136,10 @@ export class AuthService {
         message: 'Please check your email to complete the process',
       };
     } catch (error) {
-      if (error instanceof BadRequestException) {
-        throw new BadRequestException(error.message);
-      }
-
-      throw new InternalServerErrorException('Something went wrong');
+      const errorMessage = 'Please check your email to complete the process';
+      return {
+        message: (error as BadRequestException).message ?? errorMessage,
+      };
     }
   }
 }
