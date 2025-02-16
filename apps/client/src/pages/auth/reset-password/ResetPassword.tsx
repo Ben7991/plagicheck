@@ -1,8 +1,11 @@
-import { useState } from 'react';
+import { useRef, useState } from 'react';
+import { useNavigate, useSearchParams } from 'react-router-dom';
 import { SubmitHandler, useForm } from 'react-hook-form';
 import { yupResolver } from '@hookform/resolvers/yup';
 
-import { Inputs, schema } from './reset-password.util';
+import { Inputs, resetPassword, schema } from './reset-password.util';
+import { useAlert } from '../../../util/hooks/use-alert/useAlert';
+import { AlertVariant } from '../../../util/enum/alert-variant.enum';
 import FormControl from '../../../components/atoms/form-elements/form-control/FormControl';
 import FormGroup from '../../../components/atoms/form-elements/form-group/FormGroup';
 import Label from '../../../components/atoms/form-elements/label/Label';
@@ -11,27 +14,63 @@ import AuthDescriptor from '../../../components/molecules/auth-descriptor/AuthDe
 import FormFooter from '../../../components/atoms/form-elements/form-footer/FormFooter';
 import Button from '../../../components/atoms/button/Button';
 import PasswordToggler from '../../../components/molecules/password-toggler/PasswordToggler';
-import LeftArrowIcon from '../../../components/atoms/icons/LeftArrowIcon';
 import FormControlError from '../../../components/atoms/form-elements/form-control-error/FormControlError';
+import Alert from '../../../components/molecules/alert/Alert';
 
 export default function ResetPassword(): JSX.Element {
+  const timerRef = useRef<NodeJS.Timeout>();
+  const navigate = useNavigate();
+  const [searchParams] = useSearchParams();
+  const [isLoading, setIsLoading] = useState(false);
+  const { alertInfo, alertState, hideAlert, setAlertInfo, showAlert } =
+    useAlert();
   const [showNewPassword, setShowNewPassword] = useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
   const {
     register,
     handleSubmit,
     formState: { errors },
+    reset,
   } = useForm<Inputs>({
     mode: 'onBlur',
     resolver: yupResolver(schema),
   });
 
-  const onSubmit: SubmitHandler<Inputs> = (data) => {
-    console.log(data);
+  const onSubmit: SubmitHandler<Inputs> = async (data) => {
+    setIsLoading(true);
+    const token = searchParams.get('token')!;
+
+    try {
+      const result = await resetPassword(data, token);
+      reset();
+      setAlertInfo({
+        message: result.message,
+        variant: AlertVariant.SUCCESS,
+      });
+
+      timerRef.current = setTimeout(() => {
+        navigate('/');
+      }, 2000);
+    } catch (error) {
+      setAlertInfo({
+        message: (error as Error).message,
+        variant: AlertVariant.ERROR,
+      });
+      setIsLoading(false);
+    }
+
+    showAlert();
   };
 
   return (
     <>
+      {alertState && alertInfo && (
+        <Alert
+          message={alertInfo.message}
+          onHide={hideAlert}
+          variant={alertInfo.variant}
+        />
+      )}
       <AuthDescriptor
         title="Reset Password"
         info="Please enter your new password to reset. Upon success, head to the login page to sign-in"
@@ -78,16 +117,13 @@ export default function ResetPassword(): JSX.Element {
           )}
         </FormGroup>
         <FormFooter className="flex-col gap-4">
-          <Button el="button" variant="primary" type="button">
-            Save new password
-          </Button>
           <Button
-            el="link"
-            variant="secondary"
-            className="flex items-center justify-center gap-2"
-            href="/"
+            el="button"
+            variant="primary"
+            type="submit"
+            disabled={isLoading}
           >
-            <LeftArrowIcon /> Back to login
+            {isLoading ? 'Loading...' : 'Save new password'}
           </Button>
         </FormFooter>
       </form>

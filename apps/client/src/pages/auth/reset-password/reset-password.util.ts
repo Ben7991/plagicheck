@@ -35,3 +35,23 @@ export async function validateResetToken(token: string | null) {
     throw new Error(result.message);
   }
 }
+
+export async function resetPassword(value: Inputs, token: string) {
+  const response = await fetch(
+    `http://localhost:3000/api/auth/reset-password?token=${token}`,
+    {
+      method: 'POST',
+      body: JSON.stringify(value),
+      headers: {
+        'Content-Type': 'application/json',
+      },
+    },
+  );
+  const result = await response.json();
+
+  if (!response.ok) {
+    throw new Error(result.message);
+  }
+
+  return result as { message: string };
+}
