@@ -11,7 +11,10 @@ import { EventEmitter2 } from '@nestjs/event-emitter';
 
 import { UserEntity } from 'src/entities/user.entity';
 import { AccountStatus } from 'src/utils/enums/account-status.enum';
-import { FORGOT_PASSWORD_KEY } from 'src/mailer/event-identifies';
+import {
+  CONFIRM_PASSWORD_RESET,
+  FORGOT_PASSWORD_KEY,
+} from 'src/mailer/event-identifies';
 
 @Injectable()
 export class AuthService {
@@ -149,6 +152,42 @@ export class AuthService {
       return { code: 'SUCCESS' };
     } catch {
       throw new BadRequestException('Invalid token');
+    }
+  }
+
+  async resetPassword(newPassword: string, token: string) {
+    try {
+      const result = jwt.verify(token, this.secretKey) as unknown as {
+        sub: string;
+      };
+      const existingUser = await this.dataSource
+        .createQueryBuilder(UserEntity, 'users')
+        .where({
+          id: result.sub,
+        })
+        .getOne();
+
+      if (!existingUser) {
+        throw new BadRequestException('Something went wrong');
+      }
+
+      existingUser.password = newPassword;
+      await this.dataSource.manager.save(existingUser);
+
+      this.eventEmitter.emit(CONFIRM_PASSWORD_RESET, {
+        name: existingUser.name,
+        email: existingUser.email,
+      });
+
+      return {
+        message: 'Successfully reset your password',
+      };
+    } catch (error) {
+      if (error instanceof BadRequestException) {
+        throw new BadRequestException(error.message);
+      }
+
+      throw new InternalServerErrorException('Something went wrong');
     }
   }
 }

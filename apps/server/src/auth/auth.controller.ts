@@ -25,6 +25,7 @@ import {
   swaggerValidateResetTokenResponse,
 } from './auth.swagger';
 import { RequestPasswordReset } from './dto/request-password-reset.dto';
+import { ResetPasswordDto } from './dto/reset-password.dto';
 
 @Controller('auth')
 @ApiTags('Auth')
@@ -97,5 +98,17 @@ export class AuthController {
     }
 
     return this.authService.validateResetToken(token);
+  }
+
+  @Post('reset-password')
+  resetPassword(
+    @Body(ValidationPipe) body: ResetPasswordDto,
+    @Query('token') token: string,
+  ) {
+    if (body.confirmPassword !== body.newPassword) {
+      throw new BadRequestException('Passwords do not match each other');
+    }
+
+    return this.authService.resetPassword(body.newPassword, token);
   }
 }
