@@ -16,7 +16,7 @@ export class ConfirmPasswordResetService extends BaseMailer<
     const templatePath = join(
       process.cwd(),
       'views',
-      'fconfirm-password-reset.ejs',
+      'confirm-password-reset.ejs',
     );
     return renderFile(templatePath, data);
   }
@@ -28,7 +28,7 @@ export class ConfirmPasswordResetService extends BaseMailer<
 
     await transporter.sendMail({
       to: data.email,
-      subject: 'Password Reset for Plagiarism Checker System',
+      subject: 'Successfully Password Reset',
       html: mailBody,
       from: {
         address: this._configService.get<string>('mailer.address')!,
