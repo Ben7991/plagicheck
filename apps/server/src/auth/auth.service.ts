@@ -171,7 +171,10 @@ export class AuthService {
         throw new BadRequestException('Something went wrong');
       }
 
-      existingUser.password = newPassword;
+      const saltRounds = 10;
+      const hashedPassword = await bcryptjs.hash(newPassword, saltRounds);
+
+      existingUser.password = hashedPassword;
       await this.dataSource.manager.save(existingUser);
 
       this.eventEmitter.emit(CONFIRM_PASSWORD_RESET, {
