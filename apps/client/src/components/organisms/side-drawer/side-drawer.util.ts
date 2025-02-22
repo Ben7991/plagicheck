@@ -5,4 +5,5 @@ export type NavLinkClassNameProps = {
 
 export type SideDrawerProps = {
   show: boolean;
+  onHide: VoidFunction;
 };

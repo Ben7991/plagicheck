@@ -86,7 +86,7 @@ export default function AccountSettings() {
       </section>
 
       {showModal && (
-        <Modal onHide={() => setShowModal(false)} title="Logout">
+        <Modal onHide={() => setShowModal(false)} title="Delete Account">
           <p className="mb-4">
             Please not that deleting your account is an irreversible action.
             Take a moment to consider the consequences before proceeding with

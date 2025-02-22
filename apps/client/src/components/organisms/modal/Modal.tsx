@@ -8,7 +8,7 @@ export default function Modal({ title, children, onHide }: ModalProps) {
   return (
     <>
       <Backdrop onHide={onHide} />
-      <section className="bg-white w-[90%] md:w-[461px] rounded-lg px-6 py-7 fixed top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2">
+      <section className="bg-white w-[90%] md:w-[461px] rounded-lg px-6 py-7 fixed top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 z-10">
         <div className="flex items-center justify-between mb-4">
           <Headline type="h3">{title}</Headline>
           <button
