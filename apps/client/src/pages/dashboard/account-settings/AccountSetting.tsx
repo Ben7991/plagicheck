@@ -10,8 +10,13 @@ import {
   ChangePassword,
   PersonalInformation,
 } from './account-settings.partials';
+import Modal from '../../../components/organisms/modal/Modal';
+import FormFooter from '../../../components/atoms/form-elements/form-footer/FormFooter';
+import Button from '../../../components/atoms/button/Button';
+import { useState } from 'react';
 
 export default function AccountSettings() {
+  const [showModal, setShowModal] = useState(false);
   const [searchParams] = useSearchParams();
   const activeTab = searchParams.get('tab');
 
@@ -58,7 +63,10 @@ export default function AccountSettings() {
               </Link>
             </li>
             <li>
-              <button className="py-3 px-4 rounded-lg w-full flex gap-2 items-center cursor-pointer text-[var(--error-100)] hover:bg-[var(--gray-1000)]">
+              <button
+                className="py-3 px-4 rounded-lg w-full flex gap-2 items-center cursor-pointer text-[var(--error-100)] hover:bg-[var(--gray-1000)]"
+                onClick={() => setShowModal(true)}
+              >
                 <TrashIcon /> {window.innerWidth > 768 && 'Delete Account'}
               </button>
             </li>
@@ -76,6 +84,37 @@ export default function AccountSettings() {
           )}
         </section>
       </section>
+
+      {showModal && (
+        <Modal onHide={() => setShowModal(false)} title="Logout">
+          <p className="mb-4">
+            Please not that deleting your account is an irreversible action.
+            Take a moment to consider the consequences before proceeding with
+            your decision.
+          </p>
+          <form>
+            <FormFooter className="gap-[19px]">
+              <Button
+                el="button"
+                variant="secondary"
+                type="button"
+                className="basis-[197px]"
+                onClick={() => setShowModal(false)}
+              >
+                No keep
+              </Button>
+              <Button
+                el="button"
+                variant="danger"
+                type="submit"
+                className="basis-[197px]"
+              >
+                Yes, delete
+              </Button>
+            </FormFooter>
+          </form>
+        </Modal>
+      )}
     </>
   );
 }
