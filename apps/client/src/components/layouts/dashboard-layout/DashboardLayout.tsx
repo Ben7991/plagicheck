@@ -18,7 +18,7 @@ export default function DashboardLayout() {
   }, [toggleDrawer]);
 
   return (
-    <main className="w-full h-screen lg:flex">
+    <main className="w-full h-screen lg:flex overflow-hidden">
       {showDrawer && <Backdrop onHide={() => setShowDrawer(!showDrawer)} />}
       <SideDrawer show={showDrawer} />
       <section className="w-full lg:basis-[calc(100%-270px)] bg-white">
