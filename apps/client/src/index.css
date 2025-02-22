@@ -6,6 +6,7 @@
   --fw-bold: 700;
 
   --sea-blue-100: #0267ff;
+  --sea-blue-400: #cce1ff;
   --sea-blue-500: #67a4ff;
   --sea-blue-900: #0252cc;
 
@@ -55,5 +56,21 @@ h6 {
 }
 
 .nav-link-active svg {
+  stroke: #fff;
+}
+
+.trash-icon > path {
+  stroke: var(--error-100);
+}
+
+.trash-icon:hover path:nth-child(3),
+.trash-icon:hover path:nth-child(2) {
+  fill: var(--error-100);
+  stroke: var(--error-100);
+}
+
+.trash-icon:hover path:nth-child(4),
+.trash-icon:hover path:nth-child(5) {
+  fill: #fff;
   stroke: #fff;
 }
