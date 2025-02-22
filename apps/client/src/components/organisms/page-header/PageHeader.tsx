@@ -15,7 +15,7 @@ export default function PageHeader() {
   };
 
   return (
-    <header className="border-b border-b-[var(--gray-800)] py-3 px-4 md:py-4 md:px-5 xl:py-[19px] xl:px-[41px]">
+    <header className="fixed top-0 left-0 w-full lg:sticky lg:top-0 bg-white border-b border-b-[var(--gray-800)] py-3 px-4 md:py-4 md:px-5 xl:py-[19px] xl:px-[41px]">
       <div className="flex justify-between items-center lg:hidden">
         <AppLogo />
         <button className="inline-block" onClick={handleClick}>
