@@ -20,7 +20,9 @@ import { AuthService } from './auth.service';
 import { LoginDto } from './dto/login.dto';
 import {
   swaggerLoginResponse,
+  swaggerLogoutResponse,
   swaggerRequestPasswordResetResponse,
+  swaggerResetPasswordResponse,
   swaggerValidateRefreshTokenResponse,
   swaggerValidateResetTokenResponse,
 } from './auth.swagger';
@@ -100,6 +102,7 @@ export class AuthController {
     return this.authService.validateResetToken(token);
   }
 
+  @ApiResponse(swaggerResetPasswordResponse)
   @Post('reset-password')
   resetPassword(
     @Body(ValidationPipe) body: ResetPasswordDto,
@@ -110,5 +113,20 @@ export class AuthController {
     }
 
     return this.authService.resetPassword(body.newPassword, token);
+  }
+
+  @ApiResponse(swaggerLogoutResponse)
+  @Post('logout')
+  logout(@Res({ passthrough: true }) res: Response) {
+    res.cookie('_auth-tk', '', {
+      path: '/',
+      maxAge: 0,
+    });
+    res.cookie('_ref-tk', '', {
+      path: '/',
+      maxAge: 0,
+    });
+
+    return { message: 'Successfully logged out of the application' };
   }
 }

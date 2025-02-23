@@ -46,3 +46,19 @@ export const swaggerValidateResetTokenResponse = {
     code: 'SUCCESS',
   },
 };
+
+export const swaggerResetPasswordResponse = {
+  status: HttpStatus.OK,
+  description: 'OK',
+  example: {
+    message: 'Successfully reset your password',
+  },
+};
+
+export const swaggerLogoutResponse = {
+  status: HttpStatus.OK,
+  description: 'OK',
+  example: {
+    message: 'Successfully logged out of the application',
+  },
+};
