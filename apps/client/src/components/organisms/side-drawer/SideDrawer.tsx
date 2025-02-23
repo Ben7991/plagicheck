@@ -4,8 +4,9 @@ import { GoDatabase } from 'react-icons/go';
 import { RxCounterClockwiseClock } from 'react-icons/rx';
 
 import {
+  dropDownItemClass,
   logout,
-  NavLinkClassNameProps,
+  navLinkClass,
   SideDrawerProps,
 } from './side-drawer.util';
 import { useAlert } from '../../../util/hooks/use-alert/useAlert';
@@ -53,34 +54,6 @@ export default function SideDrawer({ show, onHide }: SideDrawerProps) {
     }
 
     setIsLoading(false);
-  };
-
-  const navLinkClass = ({ isActive, isPending }: NavLinkClassNameProps) => {
-    const className = 'flex items-center gap-2 py-2 px-4 rounded-lg';
-
-    if (isActive) {
-      return `${className} bg-[var(--sea-blue-100)] text-white nav-link-active`;
-    } else if (isPending) {
-      return `${className} hover:bg-[var(--gray-100)]`;
-    } else {
-      return `${className} hover:bg-[var(--gray-100)]`;
-    }
-  };
-
-  const dropDownItemClass = ({
-    isActive,
-    isPending,
-  }: NavLinkClassNameProps) => {
-    const className =
-      'flex items-center gap-2 py-1 px-4 rounded-lg text-[0.875em]';
-
-    if (isActive) {
-      return `${className} bg-[var(--sea-blue-100)] text-white nav-link-active`;
-    } else if (isPending) {
-      return `${className} hover:bg-[var(--gray-100)]`;
-    } else {
-      return `${className} hover:bg-[var(--gray-100)]`;
-    }
   };
 
   return (
