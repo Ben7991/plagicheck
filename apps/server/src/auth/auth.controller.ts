@@ -38,6 +38,7 @@ export class AuthController {
   @UseInterceptors(ClassSerializerInterceptor)
   @HttpCode(HttpStatus.OK)
   @Post('login')
+  @HttpCode(HttpStatus.OK)
   async login(
     @Body(ValidationPipe) body: LoginDto,
     @Res({ passthrough: true }) res: Response,
@@ -104,6 +105,7 @@ export class AuthController {
 
   @ApiResponse(swaggerResetPasswordResponse)
   @Post('reset-password')
+  @HttpCode(HttpStatus.OK)
   resetPassword(
     @Body(ValidationPipe) body: ResetPasswordDto,
     @Query('token') token: string,
@@ -117,6 +119,7 @@ export class AuthController {
 
   @ApiResponse(swaggerLogoutResponse)
   @Post('logout')
+  @HttpCode(HttpStatus.OK)
   logout(@Res({ passthrough: true }) res: Response) {
     res.cookie('_auth-tk', '', {
       path: '/',

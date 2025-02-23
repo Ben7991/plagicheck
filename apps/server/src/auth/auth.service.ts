@@ -15,6 +15,7 @@ import {
   CONFIRM_PASSWORD_RESET,
   FORGOT_PASSWORD_KEY,
 } from 'src/mailer/event-identifies';
+import { Hash } from 'src/utils/hash.util';
 
 @Injectable()
 export class AuthService {
@@ -171,9 +172,7 @@ export class AuthService {
         throw new BadRequestException('Something went wrong');
       }
 
-      const saltRounds = 10;
-      const hashedPassword = await bcryptjs.hash(newPassword, saltRounds);
-
+      const hashedPassword = await Hash.create(newPassword);
       existingUser.password = hashedPassword;
       await this.dataSource.manager.save(existingUser);
 
