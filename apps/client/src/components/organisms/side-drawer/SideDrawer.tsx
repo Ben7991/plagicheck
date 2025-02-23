@@ -66,7 +66,12 @@ export default function SideDrawer({ show, onHide }: SideDrawerProps) {
           <UserProfile className="lg:hidden" />
         </div>
         <div className="flex flex-col gap-4 px-[25px] mb-20 lg:mb-15 xl:mb-40 2xl:mb-[205.12px]">
-          <NavLink to="/dashboard" className={navLinkClass} end>
+          <NavLink
+            to="/dashboard"
+            className={navLinkClass}
+            end
+            onClick={onHide}
+          >
             <DashboardIcon /> Dashboard
           </NavLink>
           <div className="flex flex-col gap-1">
@@ -82,6 +87,7 @@ export default function SideDrawer({ show, onHide }: SideDrawerProps) {
                   to="/dashboard/checker"
                   className={dropDownItemClass}
                   end
+                  onClick={onHide}
                 >
                   <SearchIcon />
                   Checker
@@ -89,6 +95,7 @@ export default function SideDrawer({ show, onHide }: SideDrawerProps) {
                 <NavLink
                   to="/dashboard/checker/schedule"
                   className={dropDownItemClass}
+                  onClick={onHide}
                 >
                   <ClockIcon />
                   Schedule
@@ -96,6 +103,7 @@ export default function SideDrawer({ show, onHide }: SideDrawerProps) {
                 <NavLink
                   to="/dashboard/checker/history"
                   className={dropDownItemClass}
+                  onClick={onHide}
                 >
                   <RxCounterClockwiseClock width={16} height={16} />
                   History
@@ -103,17 +111,26 @@ export default function SideDrawer({ show, onHide }: SideDrawerProps) {
               </div>
             )}
           </div>
-          <NavLink to="/dashboard/academic-division" className={navLinkClass}>
+          <NavLink
+            to="/dashboard/academic-division"
+            className={navLinkClass}
+            onClick={onHide}
+          >
             <OpenBookIcon />
             Academic division
           </NavLink>
-          <NavLink to="/dashboard/archive" className={navLinkClass}>
+          <NavLink
+            to="/dashboard/archive"
+            className={navLinkClass}
+            onClick={onHide}
+          >
             <GoDatabase className="text-2xl" />
             Archive
           </NavLink>
           <NavLink
             to="/dashboard/manage-users?tab=lecturer"
             className={navLinkClass}
+            onClick={onHide}
           >
             <UsersIcon />
             Manage Users
@@ -121,6 +138,7 @@ export default function SideDrawer({ show, onHide }: SideDrawerProps) {
           <NavLink
             to="/dashboard/account-settings?tab=personal"
             className={navLinkClass}
+            onClick={onHide}
           >
             <GearIcon />
             Account settings
