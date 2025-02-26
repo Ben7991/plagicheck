@@ -10,6 +10,7 @@ import {
   Query,
   Req,
   Res,
+  UnauthorizedException,
   UseInterceptors,
   ValidationPipe,
 } from '@nestjs/common';
@@ -131,5 +132,29 @@ export class AuthController {
     });
 
     return { message: 'Successfully logged out of the application' };
+  }
+
+  @ApiResponse({
+    description: 'OK',
+    status: HttpStatus.OK,
+    example: {
+      code: 'SUCCESS',
+    },
+  })
+  @Get('refresh-token')
+  async refreshToken(
+    @Req() req: Request,
+    @Res({ passthrough: true }) res: Response,
+  ) {
+    const token = req.cookies['_ref-tk'] as string;
+
+    if (!token) {
+      throw new UnauthorizedException('Access denied');
+    }
+
+    const result = await this.authService.refreshToken(token);
+    this.setAuthCookie(res, result);
+
+    return { code: 'SUCCESS' };
   }
 }

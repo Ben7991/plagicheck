@@ -2,6 +2,7 @@ import {
   BadRequestException,
   Injectable,
   InternalServerErrorException,
+  UnauthorizedException,
 } from '@nestjs/common';
 import { DataSource } from 'typeorm';
 import * as bcryptjs from 'bcryptjs';
@@ -16,10 +17,12 @@ import {
   FORGOT_PASSWORD_KEY,
 } from 'src/mailer/event-identifies';
 import { Hash } from 'src/utils/hash.util';
+import { AppLogger } from 'src/app.logger';
 
 @Injectable()
 export class AuthService {
   private secretKey: string;
+  private readonly appLogger = new AppLogger(AuthService.name);
 
   constructor(
     private readonly dataSource: DataSource,
@@ -55,6 +58,11 @@ export class AuthService {
       if (error instanceof BadRequestException) {
         throw new BadRequestException(error.message);
       } else {
+        this.appLogger.error(
+          (error as Error).message,
+          (error as Error).stack,
+          `id/email: ${username}`,
+        );
         throw new InternalServerErrorException('Something went wrong');
       }
     }
@@ -108,6 +116,11 @@ export class AuthService {
         throw new BadRequestException(error.message);
       }
 
+      this.appLogger.error(
+        (error as Error).message,
+        (error as Error).stack,
+        `token: ${refreshToken}`,
+      );
       throw new InternalServerErrorException('Something went wrong');
     }
   }
@@ -188,8 +201,42 @@ export class AuthService {
       if (error instanceof BadRequestException) {
         throw new BadRequestException(error.message);
       }
-
+      this.appLogger.error((error as Error).message, (error as Error).stack);
       throw new InternalServerErrorException('Something went wrong');
+    }
+  }
+
+  async refreshToken(token: string) {
+    try {
+      const result = jwt.verify(token, this.secretKey) as unknown as {
+        sub: string;
+        email: string;
+      };
+
+      if (!result.sub || !result.email) {
+        throw new Error();
+      }
+
+      const existingUser = await this.dataSource.manager
+        .getRepository(UserEntity)
+        .findOneBy({ id: result.sub });
+
+      if (!existingUser) {
+        throw new Error();
+      }
+
+      const sameEmail = await bcryptjs.compare(
+        existingUser.email,
+        result.email,
+      );
+
+      if (!sameEmail) {
+        throw new Error();
+      }
+
+      return this.createAuthToken(existingUser);
+    } catch {
+      throw new UnauthorizedException('Access denied');
     }
   }
 }
