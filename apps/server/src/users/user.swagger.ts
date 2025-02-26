@@ -32,3 +32,11 @@ export const swaggerChangeImageResponse = {
     },
   },
 };
+
+export const swaggerRemoveAccountResponse = {
+  status: HttpStatus.OK,
+  description: 'OK',
+  example: {
+    message: 'Account deleted successfully',
+  },
+};

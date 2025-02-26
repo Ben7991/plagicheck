@@ -2,6 +2,7 @@ import {
   BadRequestException,
   Body,
   Controller,
+  Delete,
   HttpCode,
   HttpStatus,
   Post,
@@ -27,6 +28,7 @@ import {
   swaggerChangePasswordResponse,
   swaggerChangePersonalInfoResponse,
   swaggerCheckEmailResponse,
+  swaggerRemoveAccountResponse,
 } from './user.swagger';
 import { ChangePasswordDto } from './dto/change-password.dto';
 import { UserEntity } from 'src/entities/user.entity';
@@ -132,5 +134,12 @@ export class UsersController {
 
     const user = <UserEntity>req['user'];
     return this.userService.changeImage(file.filename, user);
+  }
+
+  @Delete()
+  @ApiResponse(swaggerRemoveAccountResponse)
+  removeAccount(@Req() req: Request) {
+    const user = <UserEntity>req['user'];
+    return this.userService.removeAccount(user);
   }
 }

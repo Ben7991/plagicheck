@@ -13,6 +13,7 @@ import { unlink } from 'node:fs/promises';
 import { join } from 'node:path';
 import { AppLogger } from 'src/app.logger';
 import { existsSync } from 'node:fs';
+import { AccountStatus } from 'src/utils/enums/account-status.enum';
 
 @Injectable()
 export class UsersService {
@@ -113,6 +114,23 @@ export class UsersService {
         errorObject.message,
         errorObject.stack,
         `filePath: ${filePath}`,
+        `userId: ${user.id}`,
+      );
+      throw new InternalServerErrorException('Something went wrong');
+    }
+  }
+
+  async removeAccount(user: UserEntity) {
+    try {
+      user.accountStatus = AccountStatus.SUSPENDED;
+      await this.dataSource.manager.getRepository(UserEntity).save(user);
+
+      return { message: 'Account deleted successfully' };
+    } catch (error) {
+      const errorObject = error as Error;
+      this.appLogger.error(
+        errorObject.message,
+        errorObject.stack,
         `userId: ${user.id}`,
       );
       throw new InternalServerErrorException('Something went wrong');
