@@ -1,13 +1,23 @@
-import { BadRequestException, Injectable } from '@nestjs/common';
+import {
+  BadRequestException,
+  Injectable,
+  InternalServerErrorException,
+} from '@nestjs/common';
 import { UserEntity } from 'src/entities/user.entity';
 import { DataSource } from 'typeorm';
 import * as bcryptjs from 'bcryptjs';
 
 import { Hash } from 'src/utils/hash.util';
 import { ChangePersonalInfoDto } from './dto/change-personal-info.dto';
+import { unlink } from 'node:fs/promises';
+import { join } from 'node:path';
+import { AppLogger } from 'src/app.logger';
+import { existsSync } from 'node:fs';
 
 @Injectable()
 export class UsersService {
+  private appLogger = new AppLogger(UsersService.name);
+
   constructor(private readonly dataSource: DataSource) {}
 
   async changePassword(
@@ -59,6 +69,53 @@ export class UsersService {
       return { message: 'Successfully, changed your personal information' };
     } catch (error) {
       throw new BadRequestException((error as Error).message);
+    }
+  }
+
+  async checkEmail(email: string, user: UserEntity) {
+    try {
+      const existingUserWithEmail = await this.dataSource.manager
+        .getRepository(UserEntity)
+        .findOneBy({ email });
+
+      if (existingUserWithEmail && existingUserWithEmail.id !== user.id) {
+        throw new BadRequestException('Email already taken');
+      }
+
+      return { code: 'SUCCESS' };
+    } catch (error) {
+      throw new BadRequestException((error as Error).message);
+    }
+  }
+
+  async changeImage(filePath: string, user: UserEntity) {
+    try {
+      if (user.imagePath) {
+        const imagePath = join(process.cwd(), user.imagePath);
+
+        if (existsSync(imagePath)) {
+          await unlink(imagePath);
+        }
+      }
+
+      user.imagePath = `uploads/${filePath}`;
+      await this.dataSource.manager.getRepository(UserEntity).save(user);
+
+      return {
+        message: 'Image uploaded successfully',
+        data: {
+          path: user.imagePath,
+        },
+      };
+    } catch (error) {
+      const errorObject = error as Error;
+      this.appLogger.error(
+        errorObject.message,
+        errorObject.stack,
+        `filePath: ${filePath}`,
+        `userId: ${user.id}`,
+      );
+      throw new InternalServerErrorException('Something went wrong');
     }
   }
 }

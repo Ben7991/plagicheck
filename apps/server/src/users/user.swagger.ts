@@ -15,3 +15,20 @@ export const swaggerChangePersonalInfoResponse = {
     message: 'Successfully, changed your personal information',
   },
 };
+
+export const swaggerCheckEmailResponse = {
+  status: HttpStatus.OK,
+  description: 'OK',
+  example: { code: 'SUCCESS' },
+};
+
+export const swaggerChangeImageResponse = {
+  status: HttpStatus.OK,
+  description: 'OK',
+  example: {
+    message: 'Image uploaded successfully',
+    data: {
+      path: 'uploads/1740600081996.jpg',
+    },
+  },
+};

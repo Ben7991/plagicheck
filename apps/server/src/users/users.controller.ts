@@ -6,20 +6,36 @@ import {
   HttpStatus,
   Post,
   Req,
+  UploadedFile,
   UseGuards,
+  UseInterceptors,
   ValidationPipe,
 } from '@nestjs/common';
-import { ApiBearerAuth, ApiResponse, ApiTags } from '@nestjs/swagger';
-import { AuthGuard } from 'src/auth/auth.guard';
-
 import {
+  ApiBearerAuth,
+  ApiBody,
+  ApiConsumes,
+  ApiResponse,
+  ApiTags,
+} from '@nestjs/swagger';
+import { join } from 'node:path';
+import { diskStorage } from 'multer';
+
+import { AuthGuard } from 'src/auth/auth.guard';
+import {
+  swaggerChangeImageResponse,
   swaggerChangePasswordResponse,
   swaggerChangePersonalInfoResponse,
+  swaggerCheckEmailResponse,
 } from './user.swagger';
 import { ChangePasswordDto } from './dto/change-password.dto';
 import { UserEntity } from 'src/entities/user.entity';
 import { UsersService } from './users.service';
 import { ChangePersonalInfoDto } from './dto/change-personal-info.dto';
+import { CheckEmailDto } from './dto/check-email.dto';
+import { FileInterceptor } from '@nestjs/platform-express';
+import { Request } from 'express';
+import { ChangeImageDto } from './dto/change-image.dto';
 
 @ApiBearerAuth()
 @ApiTags('Users')
@@ -49,9 +65,7 @@ export class UsersController {
     );
   }
 
-  @ApiBearerAuth()
   @ApiResponse(swaggerChangePersonalInfoResponse)
-  @UseGuards(AuthGuard)
   @Post('personal-info')
   @HttpCode(HttpStatus.OK)
   changePersonalInfo(
@@ -60,5 +74,63 @@ export class UsersController {
   ) {
     const user = req['user'] as UserEntity;
     return this.userService.changePersonalInfo(body, user);
+  }
+
+  @ApiResponse(swaggerCheckEmailResponse)
+  @Post('check-email')
+  @HttpCode(HttpStatus.OK)
+  checkEmail(@Body(ValidationPipe) body: CheckEmailDto, @Req() req: Request) {
+    const user = req['user'] as UserEntity;
+    return this.userService.checkEmail(body.email, user);
+  }
+
+  @ApiConsumes('multipart/form-data')
+  @ApiBody({
+    description: 'List of cats',
+    type: ChangeImageDto,
+  })
+  @ApiResponse(swaggerChangeImageResponse)
+  @Post('change-image')
+  @HttpCode(HttpStatus.OK)
+  @UseInterceptors(
+    FileInterceptor('image', {
+      fileFilter(_, file, callback) {
+        const acceptableMimeTypes = ['image/jpg', 'image/png', 'image/jpeg'];
+        const fileMimeType = file.mimetype.toLocaleLowerCase();
+
+        if (acceptableMimeTypes.includes(fileMimeType)) {
+          callback(null, true);
+        } else {
+          callback(null, false);
+        }
+      },
+      storage: diskStorage({
+        destination(_, __, callback) {
+          callback(null, join(process.cwd(), 'uploads'));
+        },
+        filename(_, file, callback) {
+          if (!file) {
+            callback(null, '');
+          }
+          const extensionIndex = file.originalname.lastIndexOf('.');
+          const extension = file.originalname.substring(
+            extensionIndex + 1,
+            file.originalname.length,
+          );
+          const fileName = `${Date.now()}.${extension}`;
+          callback(null, fileName);
+        },
+      }),
+    }),
+  )
+  changeImage(@UploadedFile() file: Express.Multer.File, @Req() req: Request) {
+    if (!file) {
+      throw new BadRequestException(
+        'Only images with extension jpg, png and jpeg are accepted',
+      );
+    }
+
+    const user = <UserEntity>req['user'];
+    return this.userService.changeImage(file.filename, user);
   }
 }
