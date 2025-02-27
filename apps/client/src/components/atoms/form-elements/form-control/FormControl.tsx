@@ -11,12 +11,12 @@ const FormControl = forwardRef<HTMLInputElement, FormControlProps>(
 
     return (
       <div
-        className={`flex items-center py-[10px] px-4 border rounded-lg gap-2 ${hasError ? 'border-[var(--error-100)]' : 'border-[var(--gray-700)]'} ${className}`}
+        className={`flex items-center px-4 border rounded-lg gap-2 ${hasError ? 'border-[var(--error-100)]' : 'border-[var(--gray-700)]'} ${className}`}
       >
         {leftIcon}
         <input
           {...remainingProps}
-          className="flex-grow outline-none"
+          className="flex-grow outline-none py-[10px]"
           ref={ref}
         />
         {rightIcon}
