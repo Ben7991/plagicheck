@@ -11,10 +11,11 @@ import {
   Req,
   Res,
   UnauthorizedException,
+  UseGuards,
   UseInterceptors,
   ValidationPipe,
 } from '@nestjs/common';
-import { ApiResponse, ApiTags } from '@nestjs/swagger';
+import { ApiBearerAuth, ApiResponse, ApiTags } from '@nestjs/swagger';
 import { Request, Response } from 'express';
 
 import { AuthService } from './auth.service';
@@ -29,6 +30,8 @@ import {
 } from './auth.swagger';
 import { RequestPasswordReset } from './dto/request-password-reset.dto';
 import { ResetPasswordDto } from './dto/reset-password.dto';
+import { UserEntity } from 'src/entities/user.entity';
+import { AuthGuard } from './auth.guard';
 
 @Controller('auth')
 @ApiTags('Auth')
@@ -156,5 +159,14 @@ export class AuthController {
     this.setAuthCookie(res, result);
 
     return { code: 'SUCCESS' };
+  }
+
+  @UseGuards(AuthGuard)
+  @ApiBearerAuth()
+  @Get('user')
+  @UseInterceptors(ClassSerializerInterceptor)
+  user(@Req() req: Request) {
+    const user = <UserEntity>req['user'];
+    return { data: user };
   }
 }

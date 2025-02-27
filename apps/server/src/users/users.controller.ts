@@ -1,10 +1,8 @@
 import {
   BadRequestException,
   Body,
-  ClassSerializerInterceptor,
   Controller,
   Delete,
-  Get,
   HttpCode,
   HttpStatus,
   Post,
@@ -143,12 +141,5 @@ export class UsersController {
   removeAccount(@Req() req: Request) {
     const user = <UserEntity>req['user'];
     return this.userService.removeAccount(user);
-  }
-
-  @Get()
-  @UseInterceptors(ClassSerializerInterceptor)
-  user(@Req() req: Request) {
-    const user = <UserEntity>req['user'];
-    return { data: user };
   }
 }
