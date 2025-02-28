@@ -25,7 +25,7 @@ export default function PageHeader() {
       <div className="hidden lg:flex lg:justify-between lg:items-center">
         <FormControl
           placeholder="Search anything here"
-          className="py-[8px!important] basis-[307px]"
+          className="basis-[307px]"
           leftIcon={<SearchIcon width={20} height={20} />}
         />
         <UserProfile />
