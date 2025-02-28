@@ -29,7 +29,7 @@ export default function Alert({ message, variant, onHide }: AlertProps) {
 
   return (
     <div
-      className={`fixed top-5 md:top-12 left-1/2 -translate-x-1/2 shadow-md rounded-lg w-[90%] md:w-[554px] flex items-center justify-between py-3 px-4 bg-white ${variantClasses}`}
+      className={`fixed top-5 md:top-12 left-1/2 -translate-x-1/2 shadow-md rounded-lg z-50 w-[90%] md:w-[554px] flex items-center justify-between py-3 px-4 bg-white ${variantClasses}`}
       role="alert"
     >
       <div className="flex gap-3">
