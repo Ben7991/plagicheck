@@ -1,4 +1,5 @@
-import { Link, useSearchParams } from 'react-router-dom';
+import { FormEvent, useState } from 'react';
+import { Link, useNavigate, useSearchParams } from 'react-router-dom';
 
 import styles from './AccountSetting.module.css';
 import PageHeader from '../../../components/organisms/page-header/PageHeader';
@@ -13,9 +14,22 @@ import {
 import Modal from '../../../components/organisms/modal/Modal';
 import FormFooter from '../../../components/atoms/form-elements/form-footer/FormFooter';
 import Button from '../../../components/atoms/button/Button';
-import { useState } from 'react';
+import { useAlert } from '../../../util/hooks/use-alert/useAlert';
+import Alert from '../../../components/molecules/alert/Alert';
+import { deleteAccount } from './account-settings.util';
+import { useAppDispatch, useAppSelector } from '../../../store/store.util';
+import { AlertVariant } from '../../../util/enum/alert-variant.enum';
+import { logoutAuthUser } from '../../../store/slice/auth/auth.slice';
+import { clearRememberMe } from '../../auth/login/login.util';
+import { logout } from '../../../components/organisms/side-drawer/side-drawer.util';
 
 export default function AccountSettings() {
+  const dispatch = useAppDispatch();
+  const navigate = useNavigate();
+  const authUser = useAppSelector((state) => state.auth.data);
+  const [isLoading, setIsLoading] = useState(false);
+  const { alertInfo, alertState, hideAlert, setAlertInfo, showAlert } =
+    useAlert();
   const [showModal, setShowModal] = useState(false);
   const [searchParams] = useSearchParams();
   const activeTab = searchParams.get('tab');
@@ -39,6 +53,29 @@ export default function AccountSettings() {
       />
     );
   }
+
+  const handleSubmit = async (event: FormEvent<HTMLFormElement>) => {
+    event.preventDefault();
+    setIsLoading(true);
+
+    try {
+      const result = await deleteAccount(authUser!.id);
+      setAlertInfo({
+        message: result.message,
+        variant: AlertVariant.SUCCESS,
+      });
+      dispatch(logoutAuthUser());
+      clearRememberMe();
+      await logout();
+      navigate('/');
+    } catch (error) {
+      setAlertInfo({
+        message: (error as Error).message,
+        variant: AlertVariant.ERROR,
+      });
+      setIsLoading(false);
+    }
+  };
 
   return (
     <>
@@ -75,11 +112,17 @@ export default function AccountSettings() {
         <section className="lg:basis-[calc(100%-200px)] 2xl:basis-[70%] p-5 xl:py-7 xl:px-6">
           {activeTab === 'personal' ? (
             <div className="w-full md:mx-auto md:w-[90%] xl:w-90%] lg:mx-0 2xl:w-[80%] xl:ms-10">
-              <PersonalInformation />
+              <PersonalInformation
+                onShowAlert={showAlert}
+                onSetAlertInfo={setAlertInfo}
+              />
             </div>
           ) : (
             <div className="w-full mx-auto md:w-[60%] lg:w-[70%] xl:w-[60%] 2xl:w-[50%] xl:ms-28">
-              <ChangePassword />
+              <ChangePassword
+                onShowAlert={showAlert}
+                onSetAlertInfo={setAlertInfo}
+              />
             </div>
           )}
         </section>
@@ -92,7 +135,7 @@ export default function AccountSettings() {
             Take a moment to consider the consequences before proceeding with
             your decision.
           </p>
-          <form>
+          <form onSubmit={handleSubmit}>
             <FormFooter className="gap-[19px]">
               <Button
                 el="button"
@@ -108,12 +151,21 @@ export default function AccountSettings() {
                 variant="danger"
                 type="submit"
                 className="basis-[197px]"
+                disabled={isLoading}
               >
-                Yes, delete
+                {isLoading ? 'Loading...' : 'Yes, delete'}
               </Button>
             </FormFooter>
           </form>
         </Modal>
+      )}
+
+      {alertState && alertInfo && (
+        <Alert
+          message={alertInfo.message}
+          variant={alertInfo.variant}
+          onHide={hideAlert}
+        />
       )}
     </>
   );
