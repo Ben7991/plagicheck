@@ -8,8 +8,18 @@ export default function UserProfile({ className }: UserProfileProps) {
 
   return (
     <div className={`flex gap-4 items-center ${className}`}>
-      <div className="w-12 h-12 rounded-full border border-[var(--gray-700)] flex items-center justify-center relative">
-        <UserIcon />
+      <div
+        className={`w-12 h-12 rounded-full ${!authUser?.imagePath && 'border border-[var(--gray-700)]'} flex items-center justify-center relative`}
+      >
+        {authUser?.imagePath ? (
+          <img
+            src={`http://localhost:3000/${authUser?.imagePath}`}
+            alt="User profile photo"
+            className="w-12 h-12 rounded-full object-cover shadow-lg border border-[var(--gray-700)]"
+          />
+        ) : (
+          <UserIcon />
+        )}
         <span className="w-4 h-4 border border-white rounded-full bg-[var(--success-100)] absolute bottom-0 -right-1"></span>
       </div>
       <div className="space-y-[2px]">
