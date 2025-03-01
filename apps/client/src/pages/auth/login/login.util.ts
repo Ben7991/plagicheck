@@ -44,6 +44,10 @@ export function getRememberMe(): boolean {
   return !!localStorage.getItem('_remember-me');
 }
 
+export function clearRememberMe(): void {
+  localStorage.removeItem('_remember-me');
+}
+
 export async function validateToken(): Promise<{ data: User }> {
   const response = await fetch(
     'http://localhost:3000/api/auth/validate-token',

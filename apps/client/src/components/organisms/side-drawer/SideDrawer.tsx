@@ -27,6 +27,7 @@ import Modal from '../modal/Modal';
 import FormFooter from '../../atoms/form-elements/form-footer/FormFooter';
 import Button from '../../atoms/button/Button';
 import Alert from '../../molecules/alert/Alert';
+import { clearRememberMe } from '../../../pages/auth/login/login.util';
 
 export default function SideDrawer({ show, onHide }: SideDrawerProps) {
   const [showLogoutModal, setShowLogoutModal] = useState(false);
@@ -42,8 +43,9 @@ export default function SideDrawer({ show, onHide }: SideDrawerProps) {
     setIsLoading(true);
 
     try {
-      await logout();
       dispatch(logoutAuthUser());
+      clearRememberMe();
+      await logout();
       navigate('/');
     } catch (error) {
       setAlertInfo({
