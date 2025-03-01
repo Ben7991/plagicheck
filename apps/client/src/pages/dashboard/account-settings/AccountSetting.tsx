@@ -80,7 +80,7 @@ export default function AccountSettings() {
   return (
     <>
       <PageHeader />
-      <section className="w-full lg:flex h-[91vh] mt-18 lg:mt-0">
+      <section className="w-full lg:flex h-[91vh] mt-18 md:mt-20 lg:mt-0">
         <aside className="p-5 lg:border-r lg:border-r-[var(--gray-700)] lg:basis-[230px] xl:basis-[250px] xl:py-7 xl:px-6">
           <ul className="flex gap-2 items-center md:justify-center lg:flex-col lg:justify-start lg:items-stretch lg:gap-6">
             <li>
