@@ -29,7 +29,7 @@ export default function ErrorBoundary({
             className="flex items-center justify-center gap-2"
             href={path}
           >
-            <LeftArrowIcon /> Back to login
+            <LeftArrowIcon /> Go Back
           </Button>
         </div>
       </section>
