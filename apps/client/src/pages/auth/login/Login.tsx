@@ -55,10 +55,10 @@ export default function Login(): JSX.Element {
       const message = (error as Error).message;
       console.error(message);
       setAlertInfo({ message, variant: AlertVariant.ERROR });
+      showAlert();
     }
 
     setIsLoading(false);
-    showAlert();
   };
 
   return (
