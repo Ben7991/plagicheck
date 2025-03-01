@@ -92,14 +92,14 @@ export class UsersService {
   async changeImage(filePath: string, user: UserEntity) {
     try {
       if (user.imagePath) {
-        const imagePath = join(process.cwd(), user.imagePath);
+        const imagePath = join(process.cwd(), 'uploads', user.imagePath);
 
         if (existsSync(imagePath)) {
           await unlink(imagePath);
         }
       }
 
-      user.imagePath = `uploads/${filePath}`;
+      user.imagePath = filePath;
       await this.dataSource.manager.getRepository(UserEntity).save(user);
 
       return {
