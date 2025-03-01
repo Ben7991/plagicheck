@@ -5,7 +5,10 @@ export default function Label(
 ): JSX.Element {
   const { children, className, ...remainingProps } = props;
   return (
-    <label className={`${className} text-[0.875em]`} {...remainingProps}>
+    <label
+      className={`${className} text-[0.875em] mb-1 inline-block`}
+      {...remainingProps}
+    >
       {children}
     </label>
   );
