@@ -15,7 +15,7 @@ export default function UserProfile({ className }: UserProfileProps) {
           <img
             src={`http://localhost:3000/${authUser?.imagePath}`}
             alt="User profile photo"
-            className="w-12 h-12 rounded-full object-cover shadow-lg border border-[var(--gray-700)]"
+            className="w-12 h-12 rounded-full object-cover"
           />
         ) : (
           <UserIcon />
