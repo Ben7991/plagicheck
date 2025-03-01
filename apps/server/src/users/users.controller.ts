@@ -3,8 +3,10 @@ import {
   Body,
   Controller,
   Delete,
+  ForbiddenException,
   HttpCode,
   HttpStatus,
+  Param,
   Post,
   Req,
   UploadedFile,
@@ -136,10 +138,15 @@ export class UsersController {
     return this.userService.changeImage(file.filename, user);
   }
 
-  @Delete()
+  @Delete(':id')
   @ApiResponse(swaggerRemoveAccountResponse)
-  removeAccount(@Req() req: Request) {
+  removeAccount(@Req() req: Request, @Param('id') userId: string) {
     const user = <UserEntity>req['user'];
+
+    if (user.id !== userId) {
+      throw new ForbiddenException('Not allowed');
+    }
+
     return this.userService.removeAccount(user);
   }
 }
