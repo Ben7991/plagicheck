@@ -23,16 +23,19 @@ const authSlice = createSlice({
       state,
       action: PayloadAction<Pick<AuthData, 'email' | 'name'>>,
     ) => {
-      if (!state.data) {
-        return;
-      }
-
-      state.data.name = action.payload.name;
-      state.data.email = action.payload.email;
+      state.data!.name = action.payload.name;
+      state.data!.email = action.payload.email;
+    },
+    changeImagePath: (state, action: PayloadAction<'string'>) => {
+      state.data!.imagePath = action.payload;
     },
   },
 });
 
 export default authSlice.reducer;
-export const { setAuthUser, logoutAuthUser, changeEmailandName } =
-  authSlice.actions;
+export const {
+  setAuthUser,
+  logoutAuthUser,
+  changeEmailandName,
+  changeImagePath,
+} = authSlice.actions;
