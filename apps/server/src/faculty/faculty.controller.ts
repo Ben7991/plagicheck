@@ -4,8 +4,11 @@ import {
   ClassSerializerInterceptor,
   Controller,
   Get,
+  Param,
   Post,
+  Put,
   Query,
+  UseFilters,
   UseInterceptors,
   ValidationPipe,
 } from '@nestjs/common';
@@ -17,10 +20,13 @@ import { FacultyService } from './faculty.service';
 import {
   swaggerCreateFaculty,
   swaggerPaginateFaculty,
+  swaggerUpdateFaculty,
 } from './faculty.swagger';
 import { FacultyEntity } from 'src/entities/faculty.entity';
+import { InternalServerErrorExceptionFilter } from 'src/internal-server-error-exception.filter';
 
 @Controller('faculties')
+@UseFilters(InternalServerErrorExceptionFilter)
 export class FacultyController {
   constructor(private readonly facultyService: FacultyService) {}
 
@@ -47,5 +53,16 @@ export class FacultyController {
   @Post()
   create(@Body(ValidationPipe) body: FacultyDto) {
     return this.facultyService.create(body.name);
+  }
+
+  @ApiResponse(swaggerUpdateFaculty)
+  @UseInterceptors(new DataMessageInterceptor('Faculty updated successfully'))
+  @Put(':id')
+  update(@Param('id') id: string, @Body(ValidationPipe) body: FacultyDto) {
+    if (Number.isNaN(id)) {
+      throw new BadRequestException('Invalid id');
+    }
+
+    return this.facultyService.update(+id, body.name);
   }
 }

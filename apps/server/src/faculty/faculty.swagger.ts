@@ -12,6 +12,18 @@ export const swaggerCreateFaculty = {
   },
 };
 
+export const swaggerUpdateFaculty = {
+  description: 'OK',
+  status: HttpStatus.OK,
+  example: {
+    message: 'Faculty updated successfully',
+    data: {
+      name: 'Faculty of Business',
+      id: 1,
+    },
+  },
+};
+
 export const swaggerPaginateFaculty = {
   description: 'OK',
   status: HttpStatus.OK,

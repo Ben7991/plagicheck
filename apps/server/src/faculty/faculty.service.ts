@@ -5,13 +5,11 @@ import {
 } from '@nestjs/common';
 import { DataSource, Like } from 'typeorm';
 
-import { AppLogger } from 'src/app.logger';
 import { FacultyEntity } from 'src/entities/faculty.entity';
 import { AvailabilityStatus } from 'src/utils/enums/availability-status.enum';
 
 @Injectable()
 export class FacultyService {
-  private readonly appLogger = new AppLogger(FacultyService.name);
   private readonly rows = 9;
 
   constructor(private readonly dataSource: DataSource) {}
@@ -39,13 +37,7 @@ export class FacultyService {
         data,
       };
     } catch (error) {
-      this.appLogger.error(
-        (error as Error).message,
-        (error as Error).stack,
-        `page=${page}`,
-        `query=${query}`,
-      );
-      throw new InternalServerErrorException('Something went wrong');
+      throw new InternalServerErrorException((error as Error).message);
     }
   }
 
@@ -76,12 +68,36 @@ export class FacultyService {
       if (error instanceof BadRequestException) {
         throw new BadRequestException(error.message);
       }
+      throw new InternalServerErrorException((error as Error).message);
+    }
+  }
 
-      this.appLogger.error(
-        (error as Error).message,
-        (error as Error).stack,
-        `name=${name}`,
+  async update(id: number, name: string) {
+    const queryRunner = this.dataSource.createQueryRunner();
+    await queryRunner.startTransaction();
+    await queryRunner.connect();
+
+    try {
+      const existingFaculty = await this.dataSource.manager.findOneBy(
+        FacultyEntity,
+        { id },
       );
+
+      if (!existingFaculty) {
+        throw new BadRequestException('Faculty does not exist');
+      }
+
+      existingFaculty.name = name;
+      const updatedFaculty = await queryRunner.manager.save(existingFaculty);
+      await queryRunner.commitTransaction();
+
+      return updatedFaculty;
+    } catch (error) {
+      await queryRunner.rollbackTransaction();
+
+      if (error instanceof BadRequestException) {
+        throw new BadRequestException(error.message);
+      }
       throw new InternalServerErrorException('Something went wrong');
     }
   }
