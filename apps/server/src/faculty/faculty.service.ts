@@ -101,4 +101,34 @@ export class FacultyService {
       throw new InternalServerErrorException('Something went wrong');
     }
   }
+
+  async remove(id: number) {
+    const queryRunner = this.dataSource.createQueryRunner();
+    await queryRunner.startTransaction();
+    await queryRunner.connect();
+
+    try {
+      const existingFaculty = await this.dataSource.manager.findOneBy(
+        FacultyEntity,
+        { id },
+      );
+
+      if (!existingFaculty) {
+        throw new BadRequestException('Faculty does not exist');
+      }
+
+      existingFaculty.status = AvailabilityStatus.UN_AVAILABLE;
+      await queryRunner.manager.save(existingFaculty);
+      await queryRunner.commitTransaction();
+
+      return { message: 'Faculty removed successfully' };
+    } catch (error) {
+      await queryRunner.rollbackTransaction();
+
+      if (error instanceof BadRequestException) {
+        throw new BadRequestException((error as Error).message);
+      }
+      throw new InternalServerErrorException((error as Error).message);
+    }
+  }
 }

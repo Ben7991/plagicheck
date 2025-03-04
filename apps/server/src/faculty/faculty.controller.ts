@@ -3,6 +3,7 @@ import {
   Body,
   ClassSerializerInterceptor,
   Controller,
+  Delete,
   Get,
   Param,
   Post,
@@ -20,6 +21,7 @@ import { FacultyService } from './faculty.service';
 import {
   swaggerCreateFaculty,
   swaggerPaginateFaculty,
+  swaggerRemoveFaculty,
   swaggerUpdateFaculty,
 } from './faculty.swagger';
 import { FacultyEntity } from 'src/entities/faculty.entity';
@@ -64,5 +66,15 @@ export class FacultyController {
     }
 
     return this.facultyService.update(+id, body.name);
+  }
+
+  @ApiResponse(swaggerRemoveFaculty)
+  @Delete(':id')
+  remove(@Param('id') id: string) {
+    if (Number.isNaN(id)) {
+      throw new BadRequestException('Invalid id');
+    }
+
+    return this.facultyService.remove(+id);
   }
 }

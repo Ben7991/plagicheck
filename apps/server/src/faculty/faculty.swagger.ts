@@ -24,6 +24,14 @@ export const swaggerUpdateFaculty = {
   },
 };
 
+export const swaggerRemoveFaculty = {
+  description: 'OK',
+  status: HttpStatus.OK,
+  example: {
+    message: 'Faculty removed successfully',
+  },
+};
+
 export const swaggerPaginateFaculty = {
   description: 'OK',
   status: HttpStatus.OK,
