@@ -62,3 +62,11 @@ export const swaggerLogoutResponse = {
     message: 'Successfully logged out of the application',
   },
 };
+
+export const swaggerRefreshTokenResponse = {
+  description: 'OK',
+  status: HttpStatus.OK,
+  example: {
+    code: 'SUCCESS',
+  },
+};

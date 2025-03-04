@@ -10,6 +10,7 @@ import {
   Post,
   Req,
   UploadedFile,
+  UseFilters,
   UseGuards,
   UseInterceptors,
   ValidationPipe,
@@ -21,8 +22,6 @@ import {
   ApiResponse,
   ApiTags,
 } from '@nestjs/swagger';
-import { join } from 'node:path';
-import { diskStorage } from 'multer';
 
 import { AuthGuard } from 'src/auth/auth.guard';
 import {
@@ -40,6 +39,8 @@ import { CheckEmailDto } from './dto/check-email.dto';
 import { FileInterceptor } from '@nestjs/platform-express';
 import { Request } from 'express';
 import { ChangeImageDto } from './dto/change-image.dto';
+import { InternalServerErrorExceptionFilter } from 'src/internal-server-error-exception.filter';
+import { uploadValidation } from './image-upload.multer';
 
 @ApiBearerAuth()
 @ApiTags('Users')
@@ -51,6 +52,7 @@ export class UsersController {
   @ApiResponse(swaggerChangePasswordResponse)
   @Post('password')
   @HttpCode(HttpStatus.OK)
+  @UseFilters(InternalServerErrorExceptionFilter)
   changePassword(
     @Body(ValidationPipe) body: ChangePasswordDto,
     @Req() req: Request,
@@ -72,6 +74,7 @@ export class UsersController {
   @ApiResponse(swaggerChangePersonalInfoResponse)
   @Post('personal-info')
   @HttpCode(HttpStatus.OK)
+  @UseFilters(InternalServerErrorExceptionFilter)
   changePersonalInfo(
     @Body(ValidationPipe) body: ChangePersonalInfoDto,
     @Req() req: Request,
@@ -83,6 +86,7 @@ export class UsersController {
   @ApiResponse(swaggerCheckEmailResponse)
   @Post('check-email')
   @HttpCode(HttpStatus.OK)
+  @UseFilters(InternalServerErrorExceptionFilter)
   checkEmail(@Body(ValidationPipe) body: CheckEmailDto, @Req() req: Request) {
     const user = req['user'] as UserEntity;
     return this.userService.checkEmail(body.email, user);
@@ -96,37 +100,8 @@ export class UsersController {
   @ApiResponse(swaggerChangeImageResponse)
   @Post('change-image')
   @HttpCode(HttpStatus.OK)
-  @UseInterceptors(
-    FileInterceptor('image', {
-      fileFilter(_, file, callback) {
-        const acceptableMimeTypes = ['image/jpg', 'image/png', 'image/jpeg'];
-        const fileMimeType = file.mimetype.toLocaleLowerCase();
-
-        if (acceptableMimeTypes.includes(fileMimeType)) {
-          callback(null, true);
-        } else {
-          callback(null, false);
-        }
-      },
-      storage: diskStorage({
-        destination(_, __, callback) {
-          callback(null, join(process.cwd(), 'uploads'));
-        },
-        filename(_, file, callback) {
-          if (!file) {
-            callback(null, '');
-          }
-          const extensionIndex = file.originalname.lastIndexOf('.');
-          const extension = file.originalname.substring(
-            extensionIndex + 1,
-            file.originalname.length,
-          );
-          const fileName = `${Date.now()}.${extension}`;
-          callback(null, fileName);
-        },
-      }),
-    }),
-  )
+  @UseInterceptors(FileInterceptor('image', uploadValidation))
+  @UseFilters(InternalServerErrorExceptionFilter)
   changeImage(@UploadedFile() file: Express.Multer.File, @Req() req: Request) {
     if (!file) {
       throw new BadRequestException(
@@ -138,8 +113,9 @@ export class UsersController {
     return this.userService.changeImage(file.filename, user);
   }
 
-  @Delete(':id')
   @ApiResponse(swaggerRemoveAccountResponse)
+  @Delete(':id')
+  @UseFilters(InternalServerErrorExceptionFilter)
   removeAccount(@Req() req: Request, @Param('id') userId: string) {
     const user = <UserEntity>req['user'];
 
