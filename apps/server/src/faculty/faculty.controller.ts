@@ -6,8 +6,9 @@ import {
   Delete,
   Get,
   Param,
+  ParseIntPipe,
+  Patch,
   Post,
-  Put,
   Query,
   UseFilters,
   UseInterceptors,
@@ -59,22 +60,17 @@ export class FacultyController {
 
   @ApiResponse(swaggerUpdateFaculty)
   @UseInterceptors(new DataMessageInterceptor('Faculty updated successfully'))
-  @Put(':id')
-  update(@Param('id') id: string, @Body(ValidationPipe) body: FacultyDto) {
-    if (Number.isNaN(id)) {
-      throw new BadRequestException('Invalid id');
-    }
-
+  @Patch(':id')
+  update(
+    @Param('id', ParseIntPipe) id: string,
+    @Body(ValidationPipe) body: FacultyDto,
+  ) {
     return this.facultyService.update(+id, body.name);
   }
 
   @ApiResponse(swaggerRemoveFaculty)
   @Delete(':id')
-  remove(@Param('id') id: string) {
-    if (Number.isNaN(id)) {
-      throw new BadRequestException('Invalid id');
-    }
-
+  remove(@Param('id', ParseIntPipe) id: string) {
     return this.facultyService.remove(+id);
   }
 }
