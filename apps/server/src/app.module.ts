@@ -12,6 +12,7 @@ import { AuthModule } from './auth/auth.module';
 import { UsersModule } from './users/users.module';
 import { MailerModule } from './mailer/mailer.module';
 import { FacultyModule } from './faculty/faculty.module';
+import { DepartmentModule } from './department/department.module';
 import envConfig from './config/env.config';
 
 @Module({
@@ -43,6 +44,7 @@ import envConfig from './config/env.config';
     UsersModule,
     MailerModule,
     FacultyModule,
+    DepartmentModule,
   ],
   controllers: [AppController],
   providers: [AppService],
