@@ -24,6 +24,9 @@ export class FacultyService {
         },
       });
       const data = await repo.find({
+        relations: {
+          departments: true,
+        },
         skip: page * this.rows,
         take: this.rows,
         where: {
