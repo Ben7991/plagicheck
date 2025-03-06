@@ -7,10 +7,12 @@ import {
   ParseIntPipe,
   Patch,
   Post,
+  UseFilters,
+  UseGuards,
   UseInterceptors,
   ValidationPipe,
 } from '@nestjs/common';
-import { ApiResponse } from '@nestjs/swagger';
+import { ApiBearerAuth, ApiResponse } from '@nestjs/swagger';
 
 import { DepartmentService } from './department.service';
 import { DepartmentDto } from './dto/department.dto';
@@ -20,12 +22,22 @@ import {
   swaggerRemoveDepartment,
   swaggerUpdateDepartment,
 } from './department.swagger';
+import { AuthGuard } from 'src/auth/auth.guard';
+import { InternalServerErrorExceptionFilter } from 'src/internal-server-error-exception.filter';
+import { AccessRole } from 'src/utils/decorators/acces-role.decorator';
+import { Role } from 'src/utils/enums/role.enum';
+import { RolesGuard } from 'src/utils/guards/roles.guard';
 
+@ApiBearerAuth()
+@UseGuards(AuthGuard)
+@UseFilters(InternalServerErrorExceptionFilter)
 @Controller('departments')
 export class DepartmentController {
   constructor(private readonly departmentService: DepartmentService) {}
 
   @ApiResponse(swaggerCreateDepartment)
+  @AccessRole(Role.ADMIN)
+  @UseGuards(RolesGuard)
   @UseInterceptors(ClassSerializerInterceptor)
   @UseInterceptors(new DataMessageInterceptor('Department added successfully'))
   @Post()
@@ -34,6 +46,8 @@ export class DepartmentController {
   }
 
   @ApiResponse(swaggerUpdateDepartment)
+  @AccessRole(Role.ADMIN)
+  @UseGuards(RolesGuard)
   @UseInterceptors(ClassSerializerInterceptor)
   @UseInterceptors(
     new DataMessageInterceptor('Department updated successfully'),
@@ -47,6 +61,8 @@ export class DepartmentController {
   }
 
   @ApiResponse(swaggerRemoveDepartment)
+  @AccessRole(Role.ADMIN)
+  @UseGuards(RolesGuard)
   @Delete(':id')
   remove(@Param('id', ParseIntPipe) id: string) {
     return this.departmentService.remove(+id);

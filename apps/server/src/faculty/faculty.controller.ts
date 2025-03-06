@@ -11,10 +11,11 @@ import {
   Post,
   Query,
   UseFilters,
+  UseGuards,
   UseInterceptors,
   ValidationPipe,
 } from '@nestjs/common';
-import { ApiQuery, ApiResponse } from '@nestjs/swagger';
+import { ApiBearerAuth, ApiQuery, ApiResponse } from '@nestjs/swagger';
 
 import { FacultyDto } from './dto/faculty.dto';
 import { DataMessageInterceptor } from 'src/utils/interceptors/data-message.interceptor';
@@ -27,7 +28,13 @@ import {
 } from './faculty.swagger';
 import { FacultyEntity } from 'src/entities/faculty.entity';
 import { InternalServerErrorExceptionFilter } from 'src/internal-server-error-exception.filter';
+import { AuthGuard } from 'src/auth/auth.guard';
+import { AccessRole } from 'src/utils/decorators/acces-role.decorator';
+import { Role } from 'src/utils/enums/role.enum';
+import { RolesGuard } from 'src/utils/guards/roles.guard';
 
+@ApiBearerAuth()
+@UseGuards(AuthGuard)
 @Controller('faculties')
 @UseFilters(InternalServerErrorExceptionFilter)
 export class FacultyController {
@@ -49,6 +56,8 @@ export class FacultyController {
   }
 
   @ApiResponse(swaggerCreateFaculty)
+  @AccessRole(Role.ADMIN)
+  @UseGuards(RolesGuard)
   @UseInterceptors(ClassSerializerInterceptor)
   @UseInterceptors(
     new DataMessageInterceptor<FacultyEntity>('Faculty added successfully'),
@@ -59,6 +68,8 @@ export class FacultyController {
   }
 
   @ApiResponse(swaggerUpdateFaculty)
+  @AccessRole(Role.ADMIN)
+  @UseGuards(RolesGuard)
   @UseInterceptors(new DataMessageInterceptor('Faculty updated successfully'))
   @Patch(':id')
   update(
@@ -69,6 +80,8 @@ export class FacultyController {
   }
 
   @ApiResponse(swaggerRemoveFaculty)
+  @AccessRole(Role.ADMIN)
+  @UseGuards(RolesGuard)
   @Delete(':id')
   remove(@Param('id', ParseIntPipe) id: string) {
     return this.facultyService.remove(+id);
