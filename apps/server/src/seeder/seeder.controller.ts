@@ -1,5 +1,6 @@
 import { Controller, Post } from '@nestjs/common';
 import { ApiTags } from '@nestjs/swagger';
+
 import { SeederService } from './seeder.service';
 
 @Controller('seeders')
@@ -10,5 +11,10 @@ export class SeederController {
   @Post('create-admin')
   createAdmin() {
     return this.seederService.createAdmin();
+  }
+
+  @Post('load-faculties')
+  loadFaculties() {
+    return this.seederService.loadFaculties();
   }
 }

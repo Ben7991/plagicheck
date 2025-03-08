@@ -4,6 +4,9 @@ import { DataSource } from 'typeorm';
 import * as bcryptjs from 'bcryptjs';
 
 import { UserEntity } from 'src/entities/user.entity';
+import { FacultyEntity } from 'src/entities/faculty.entity';
+
+import facultyData from './data/faculty.data';
 
 @Injectable()
 export class SeederService {
@@ -57,6 +60,20 @@ export class SeederService {
       await queryRunner.rollbackTransaction();
       await queryRunner.release();
       throw new BadRequestException((error as Error).message);
+    }
+  }
+
+  async loadFaculties() {
+    try {
+      for (const name of facultyData) {
+        const faculty = new FacultyEntity();
+        faculty.name = name;
+        await this.dataSource.manager.save(faculty);
+      }
+
+      return { message: 'Loaded faculties successfully' };
+    } catch {
+      throw new BadRequestException('Already loaded faculties');
     }
   }
 }
