@@ -6,6 +6,7 @@ import {
   Delete,
   Get,
   Param,
+  ParseBoolPipe,
   ParseIntPipe,
   Patch,
   Post,
@@ -42,10 +43,19 @@ export class FacultyController {
 
   @ApiQuery({ name: 'page', required: false })
   @ApiQuery({ name: 'q', required: false })
+  @ApiQuery({ name: 'all', required: true })
   @ApiResponse(swaggerPaginateFaculty)
   @UseInterceptors(ClassSerializerInterceptor)
   @Get()
-  paginate(@Query('page') page?: string, @Query('q') query?: string) {
+  findAll(
+    @Query('all', ParseBoolPipe) all: boolean,
+    @Query('page') page?: string,
+    @Query('q') query?: string,
+  ) {
+    if (all) {
+      return this.facultyService.findAll();
+    }
+
     const parsedPage = !page ? 0 : parseInt(page);
 
     if (Number.isNaN(parsedPage)) {

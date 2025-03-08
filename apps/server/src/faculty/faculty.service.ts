@@ -14,6 +14,23 @@ export class FacultyService {
 
   constructor(private readonly dataSource: DataSource) {}
 
+  async findAll() {
+    try {
+      const data = await this.dataSource.manager.find(FacultyEntity, {
+        where: {
+          status: AvailabilityStatus.AVAILABLE,
+        },
+        order: {
+          name: 'ASC',
+        },
+      });
+
+      return { data };
+    } catch {
+      throw new InternalServerErrorException('Something went wrong');
+    }
+  }
+
   async paginage(page: number, query: string) {
     try {
       const repo = this.dataSource.manager.getRepository(FacultyEntity);
@@ -32,6 +49,9 @@ export class FacultyService {
         where: {
           name: Like(`%${query}%`),
           status: AvailabilityStatus.AVAILABLE,
+        },
+        order: {
+          id: 'DESC',
         },
       });
 
