@@ -177,15 +177,7 @@ export function PersonalInformation({
       reset();
     } catch (error) {
       if ((error as Error).message === 'UN_AUTHORIZED') {
-        onSetAlertInfo({
-          message: 'Your session has expired',
-          variant: AlertVariant.ERROR,
-        });
-
-        setTimeout(() => {
-          navigate('/');
-        }, 2000);
-        return;
+        return navigate('/');
       }
 
       onSetAlertInfo({
@@ -329,6 +321,10 @@ export function ChangePassword({
       await logout();
       navigate('/');
     } catch (error) {
+      if ((error as Error).message === 'UN_AUTHORIZED') {
+        return navigate('/');
+      }
+
       onSetAlertInfo({
         message: (error as Error).message,
         variant: AlertVariant.ERROR,
