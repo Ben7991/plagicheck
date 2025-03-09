@@ -74,3 +74,27 @@ h6 {
   fill: #fff;
   stroke: #fff;
 }
+
+.pencil-icon:hover path {
+  stroke: var(--sea-blue-100);
+  fill: var(--sea-blue-100);
+}
+
+.pencil-icon:hover path:nth-child(2) {
+  stroke: #fff;
+}
+
+th {
+  background-color: var(--gray-1000);
+  font-weight: 500;
+}
+
+td,
+th {
+  padding: 10px;
+  vertical-align: middle;
+}
+
+td {
+  border-bottom: 1px solid var(--gray-900);
+}
