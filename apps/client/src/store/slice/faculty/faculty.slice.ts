@@ -2,6 +2,7 @@ import { createSlice, PayloadAction } from '@reduxjs/toolkit';
 
 import { FacultyState } from './faculty.util';
 import { Faculty } from '../../../util/types/faculty.type';
+import { Department } from '../../../util/types/department.type';
 
 const initialState: FacultyState = {
   data: [],
@@ -31,8 +32,25 @@ const facultySlice = createSlice({
         state.data = [...updatedState];
       }
     },
+    addDepartment: (
+      state,
+      action: PayloadAction<{ department: Department; facultyId: number }>,
+    ) => {
+      const existingFacultyIndex = state.data.findIndex(
+        (faculty) => faculty.id === action.payload.facultyId,
+      );
+
+      if (existingFacultyIndex === -1) {
+        return;
+      }
+
+      state.data[existingFacultyIndex].departments.push(
+        action.payload.department,
+      );
+    },
   },
 });
 
 export default facultySlice.reducer;
-export const { loadFaculties, addFaculty } = facultySlice.actions;
+export const { loadFaculties, addFaculty, addDepartment } =
+  facultySlice.actions;
