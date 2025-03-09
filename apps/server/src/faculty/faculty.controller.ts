@@ -62,7 +62,7 @@ export class FacultyController {
       throw new BadRequestException('Invalid page number');
     }
 
-    return this.facultyService.paginage(parsedPage, query ?? '');
+    return this.facultyService.paginate(parsedPage, query ?? '');
   }
 
   @ApiResponse(swaggerCreateFaculty)

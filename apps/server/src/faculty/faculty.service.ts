@@ -31,7 +31,7 @@ export class FacultyService {
     }
   }
 
-  async paginage(page: number, query: string) {
+  async paginate(page: number, query: string) {
     try {
       const repo = this.dataSource.manager.getRepository(FacultyEntity);
       const count = await repo.count({
@@ -54,6 +54,12 @@ export class FacultyService {
           id: 'DESC',
         },
       });
+
+      for (const row of data) {
+        row.departments = row.departments.filter(
+          (item) => item.status === AvailabilityStatus.AVAILABLE,
+        );
+      }
 
       return {
         count,
