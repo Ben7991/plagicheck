@@ -17,4 +17,9 @@ export class SeederController {
   loadFaculties() {
     return this.seederService.loadFaculties();
   }
+
+  @Post('load-departments')
+  loadDepartments() {
+    return this.seederService.loadDepartments();
+  }
 }
