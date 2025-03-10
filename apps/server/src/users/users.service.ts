@@ -11,14 +11,12 @@ import { Hash } from 'src/utils/hash.util';
 import { ChangePersonalInfoDto } from './dto/change-personal-info.dto';
 import { unlink } from 'node:fs/promises';
 import { join } from 'node:path';
-import { AppLogger } from 'src/app.logger';
 import { existsSync } from 'node:fs';
+
 import { AccountStatus } from 'src/utils/enums/account-status.enum';
 
 @Injectable()
 export class UsersService {
-  private appLogger = new AppLogger(UsersService.name);
-
   constructor(private readonly dataSource: DataSource) {}
 
   async changePassword(
@@ -45,7 +43,10 @@ export class UsersService {
 
       return { message: 'Successfully changed your password' };
     } catch (error) {
-      throw new BadRequestException((error as Error).message);
+      if (error as BadRequestException) {
+        throw new BadRequestException((error as Error).message);
+      }
+      throw new InternalServerErrorException((error as Error).message);
     }
   }
 
@@ -69,7 +70,10 @@ export class UsersService {
 
       return { message: 'Successfully, changed your personal information' };
     } catch (error) {
-      throw new BadRequestException((error as Error).message);
+      if (error instanceof BadRequestException) {
+        throw new BadRequestException((error as Error).message);
+      }
+      throw new InternalServerErrorException((error as Error).message);
     }
   }
 
@@ -85,7 +89,10 @@ export class UsersService {
 
       return { code: 'SUCCESS' };
     } catch (error) {
-      throw new BadRequestException((error as Error).message);
+      if (error instanceof BadRequestException) {
+        throw new BadRequestException((error as Error).message);
+      }
+      throw new InternalServerErrorException((error as Error).message);
     }
   }
 
@@ -109,14 +116,7 @@ export class UsersService {
         },
       };
     } catch (error) {
-      const errorObject = error as Error;
-      this.appLogger.error(
-        errorObject.message,
-        errorObject.stack,
-        `filePath: ${filePath}`,
-        `userId: ${user.id}`,
-      );
-      throw new InternalServerErrorException('Something went wrong');
+      throw new InternalServerErrorException((error as Error).message);
     }
   }
 
@@ -127,13 +127,7 @@ export class UsersService {
 
       return { message: 'Account deleted successfully' };
     } catch (error) {
-      const errorObject = error as Error;
-      this.appLogger.error(
-        errorObject.message,
-        errorObject.stack,
-        `userId: ${user.id}`,
-      );
-      throw new InternalServerErrorException('Something went wrong');
+      throw new InternalServerErrorException((error as Error).message);
     }
   }
 }

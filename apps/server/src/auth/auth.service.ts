@@ -17,12 +17,10 @@ import {
   FORGOT_PASSWORD_KEY,
 } from 'src/mailer/event-identifies';
 import { Hash } from 'src/utils/hash.util';
-import { AppLogger } from 'src/app.logger';
 
 @Injectable()
 export class AuthService {
   private secretKey: string;
-  private readonly appLogger = new AppLogger(AuthService.name);
 
   constructor(
     private readonly dataSource: DataSource,
@@ -57,14 +55,8 @@ export class AuthService {
     } catch (error) {
       if (error instanceof BadRequestException) {
         throw new BadRequestException(error.message);
-      } else {
-        this.appLogger.error(
-          (error as Error).message,
-          (error as Error).stack,
-          `id/email: ${username}`,
-        );
-        throw new InternalServerErrorException('Something went wrong');
       }
+      throw new InternalServerErrorException((error as Error).message);
     }
   }
 
@@ -115,13 +107,7 @@ export class AuthService {
       if (error instanceof BadRequestException) {
         throw new BadRequestException(error.message);
       }
-
-      this.appLogger.error(
-        (error as Error).message,
-        (error as Error).stack,
-        `token: ${refreshToken}`,
-      );
-      throw new InternalServerErrorException('Something went wrong');
+      throw new InternalServerErrorException((error as Error).message);
     }
   }
 
@@ -153,10 +139,10 @@ export class AuthService {
         message: 'Please check your email to complete the process',
       };
     } catch (error) {
-      const errorMessage = 'Please check your email to complete the process';
-      return {
-        message: (error as BadRequestException).message ?? errorMessage,
-      };
+      if (error instanceof BadRequestException) {
+        throw new BadRequestException((error as Error).message);
+      }
+      throw new InternalServerErrorException((error as Error).message);
     }
   }
 
@@ -201,8 +187,7 @@ export class AuthService {
       if (error instanceof BadRequestException) {
         throw new BadRequestException(error.message);
       }
-      this.appLogger.error((error as Error).message, (error as Error).stack);
-      throw new InternalServerErrorException('Something went wrong');
+      throw new InternalServerErrorException((error as Error).message);
     }
   }
 
@@ -214,7 +199,7 @@ export class AuthService {
       };
 
       if (!result.sub || !result.email) {
-        throw new Error();
+        throw new UnauthorizedException();
       }
 
       const existingUser = await this.dataSource.manager
@@ -222,7 +207,7 @@ export class AuthService {
         .findOneBy({ id: result.sub });
 
       if (!existingUser) {
-        throw new Error();
+        throw new UnauthorizedException();
       }
 
       const sameEmail = await bcryptjs.compare(
@@ -231,12 +216,15 @@ export class AuthService {
       );
 
       if (!sameEmail) {
-        throw new Error();
+        throw new UnauthorizedException();
       }
 
       return this.createAuthToken(existingUser);
-    } catch {
-      throw new UnauthorizedException('Access denied');
+    } catch (error) {
+      if (error instanceof UnauthorizedException) {
+        throw new UnauthorizedException('Access denied');
+      }
+      throw new InternalServerErrorException((error as Error).message);
     }
   }
 }

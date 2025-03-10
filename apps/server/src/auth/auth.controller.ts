@@ -11,6 +11,7 @@ import {
   Req,
   Res,
   UnauthorizedException,
+  UseFilters,
   UseGuards,
   UseInterceptors,
   ValidationPipe,
@@ -23,6 +24,7 @@ import { LoginDto } from './dto/login.dto';
 import {
   swaggerLoginResponse,
   swaggerLogoutResponse,
+  swaggerRefreshTokenResponse,
   swaggerRequestPasswordResetResponse,
   swaggerResetPasswordResponse,
   swaggerValidateRefreshTokenResponse,
@@ -32,6 +34,7 @@ import { RequestPasswordReset } from './dto/request-password-reset.dto';
 import { ResetPasswordDto } from './dto/reset-password.dto';
 import { UserEntity } from 'src/entities/user.entity';
 import { AuthGuard } from './auth.guard';
+import { InternalServerErrorExceptionFilter } from 'src/internal-server-error-exception.filter';
 
 @Controller('auth')
 @ApiTags('Auth')
@@ -43,6 +46,7 @@ export class AuthController {
   @HttpCode(HttpStatus.OK)
   @Post('login')
   @HttpCode(HttpStatus.OK)
+  @UseFilters(InternalServerErrorExceptionFilter)
   async login(
     @Body(ValidationPipe) body: LoginDto,
     @Res({ passthrough: true }) res: Response,
@@ -78,6 +82,7 @@ export class AuthController {
   @ApiResponse(swaggerValidateRefreshTokenResponse)
   @UseInterceptors(ClassSerializerInterceptor)
   @Get('validate-token')
+  @UseFilters(InternalServerErrorExceptionFilter)
   async validateRefreshToken(
     @Req() req: Request,
     @Res({ passthrough: true }) res: Response,
@@ -99,6 +104,7 @@ export class AuthController {
 
   @ApiResponse(swaggerValidateResetTokenResponse)
   @Get('validate-reset-token')
+  @UseFilters(InternalServerErrorExceptionFilter)
   validateResetToken(@Query('token') token: string) {
     if (!token) {
       throw new BadRequestException('Invalid token');
@@ -110,6 +116,7 @@ export class AuthController {
   @ApiResponse(swaggerResetPasswordResponse)
   @Post('reset-password')
   @HttpCode(HttpStatus.OK)
+  @UseFilters(InternalServerErrorExceptionFilter)
   resetPassword(
     @Body(ValidationPipe) body: ResetPasswordDto,
     @Query('token') token: string,
@@ -137,14 +144,9 @@ export class AuthController {
     return { message: 'Successfully logged out of the application' };
   }
 
-  @ApiResponse({
-    description: 'OK',
-    status: HttpStatus.OK,
-    example: {
-      code: 'SUCCESS',
-    },
-  })
+  @ApiResponse(swaggerRefreshTokenResponse)
   @Get('refresh-token')
+  @UseFilters(InternalServerErrorExceptionFilter)
   async refreshToken(
     @Req() req: Request,
     @Res({ passthrough: true }) res: Response,

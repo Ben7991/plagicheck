@@ -1,9 +1,14 @@
 import { BadRequestException, Injectable } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
-import { DataSource } from 'typeorm';
+import { DataSource, Like } from 'typeorm';
 import * as bcryptjs from 'bcryptjs';
 
 import { UserEntity } from 'src/entities/user.entity';
+import { FacultyEntity } from 'src/entities/faculty.entity';
+
+import facultyData from './data/faculty.data';
+import departmentData from './data/department.data';
+import { DepartmentEntity } from 'src/entities/department.entity';
 
 @Injectable()
 export class SeederService {
@@ -57,6 +62,39 @@ export class SeederService {
       await queryRunner.rollbackTransaction();
       await queryRunner.release();
       throw new BadRequestException((error as Error).message);
+    }
+  }
+
+  async loadFaculties() {
+    try {
+      for (const name of facultyData) {
+        const faculty = new FacultyEntity();
+        faculty.name = name;
+        await this.dataSource.manager.save(faculty);
+      }
+
+      return { message: 'Loaded faculties successfully' };
+    } catch {
+      throw new BadRequestException('Already loaded faculties');
+    }
+  }
+
+  async loadDepartments() {
+    try {
+      for (const data of departmentData) {
+        const faculty = await this.dataSource.manager.findOneBy(FacultyEntity, {
+          name: Like(`%${data.faculty}%`),
+        });
+        const department = new DepartmentEntity();
+        department.name = data.department;
+        department.faculty = faculty!;
+
+        await this.dataSource.manager.save(department);
+      }
+
+      return { message: 'Loaded departments successfully' };
+    } catch {
+      throw new BadRequestException('Already loaded departments');
     }
   }
 }

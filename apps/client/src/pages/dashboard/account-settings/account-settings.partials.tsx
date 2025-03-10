@@ -177,15 +177,7 @@ export function PersonalInformation({
       reset();
     } catch (error) {
       if ((error as Error).message === 'UN_AUTHORIZED') {
-        onSetAlertInfo({
-          message: 'Your session has expired',
-          variant: AlertVariant.ERROR,
-        });
-
-        setTimeout(() => {
-          navigate('/');
-        }, 2000);
-        return;
+        return navigate('/');
       }
 
       onSetAlertInfo({
@@ -329,6 +321,10 @@ export function ChangePassword({
       await logout();
       navigate('/');
     } catch (error) {
+      if ((error as Error).message === 'UN_AUTHORIZED') {
+        return navigate('/');
+      }
+
       onSetAlertInfo({
         message: (error as Error).message,
         variant: AlertVariant.ERROR,
@@ -346,9 +342,7 @@ export function ChangePassword({
       />
       <form onSubmit={handleSubmit(onSubmit)}>
         <FormGroup className="mb-3 xl:mb-8">
-          <Label htmlFor="current_password" className="mb-1 inline-block">
-            Current Password
-          </Label>
+          <Label htmlFor="current_password">Current Password</Label>
           <FormControl
             type="password"
             id="current_password"
@@ -361,9 +355,7 @@ export function ChangePassword({
           )}
         </FormGroup>
         <FormGroup className="mb-3 xl:mb-8">
-          <Label htmlFor="new_password" className="mb-1 inline-block">
-            New Password
-          </Label>
+          <Label htmlFor="new_password">New Password</Label>
           <FormControl
             type="password"
             id="new_password"
@@ -380,9 +372,7 @@ export function ChangePassword({
           )}
         </FormGroup>
         <FormGroup className="mb-14">
-          <Label htmlFor="confirm_password" className="mb-1 inline-block">
-            Confirm Password
-          </Label>
+          <Label htmlFor="confirm_password">Confirm Password</Label>
           <FormControl
             type="password"
             id="confirm_password"

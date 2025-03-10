@@ -6,19 +6,19 @@ import { join } from 'node:path';
 export class AppLogger extends ConsoleLogger {
   private logFilePath: string;
 
-  constructor(context: string) {
-    super(context);
+  constructor() {
+    super();
     this.logFilePath = join(process.cwd(), 'logs', 'error.log');
   }
 
   override error(
     message: string,
-    stack?: string,
+    url: string,
     ...optionalParams: string[]
   ): void {
     appendFileSync(
       this.logFilePath,
-      `[${this.getTimestamp()}, ${this.context}] => [MESSAGE] ${message}, [STACK] ${stack} [PARAMS]: ${optionalParams.join(',')}`,
+      `[${this.getTimestamp()}, ${url}] => [MESSAGE] ${message}, ${optionalParams.join(',')}`,
     );
   }
 }
