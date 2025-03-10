@@ -460,7 +460,13 @@ export const DepartmentList = forwardRef<
               className="flex items-center justify-between"
               key={department.id}
             >
-              <span>{department.name}</span>
+              {department.name.length > 24 ? (
+                <span title={department.name}>
+                  {department.name.substring(0, 24)}...
+                </span>
+              ) : (
+                <span>{department.name}</span>
+              )}
               <p className="space-x-2">
                 <button
                   className="hover:cursor-pointer"
