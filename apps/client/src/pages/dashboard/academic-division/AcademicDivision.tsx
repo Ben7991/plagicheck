@@ -38,8 +38,9 @@ export default function AcademicDivision() {
   useEffect(() => {
     const fetchFaculties = async () => {
       try {
+        const searchQuery = searchParams.get('q') ?? undefined;
         const page = searchParams.get('page') ?? 1;
-        const result = await getFaculties(false, +page);
+        const result = await getFaculties(false, +page, searchQuery);
         dispatch(
           loadFaculties({
             data: result.data,

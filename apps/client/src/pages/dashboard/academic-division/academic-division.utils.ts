@@ -5,10 +5,14 @@ import { getToken } from '../../../util/get-token.util';
 import { processedStatusCode } from '../../../util/processed-status-code.util';
 import { refreshAccessToken } from '../../../util/refresh-token.util';
 
-export async function getFaculties(all: boolean = false, page?: number) {
+export async function getFaculties(
+  all: boolean = false,
+  page?: number,
+  query?: string,
+) {
   const token = getToken();
   const response = await fetch(
-    `http://localhost:3000/api/faculties?all=${all}&page=${page ? page - 1 : 0}`,
+    `http://localhost:3000/api/faculties?all=${all}&page=${page ? page - 1 : 0}&q=${query ?? ''}`,
     {
       method: 'GET',
       credentials: 'include',

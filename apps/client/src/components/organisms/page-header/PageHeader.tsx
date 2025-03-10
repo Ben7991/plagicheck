@@ -1,4 +1,5 @@
-import { useRef } from 'react';
+import { ChangeEvent, useRef } from 'react';
+import { useLocation, useNavigate, useSearchParams } from 'react-router-dom';
 import { PiHamburger } from 'react-icons/pi';
 
 import AppLogo from '../../molecules/app-logo/AppLogo';
@@ -8,11 +9,36 @@ import SearchIcon from '../../atoms/icons/SearchIcon';
 import UserProfile from '../../molecules/user-profile/UserProfile';
 
 export default function PageHeader() {
+  const timerRef = useRef<NodeJS.Timeout>();
   const drawerObserverRef = useRef(MobileDrawerObserver.getInstance());
+  const [searchParams] = useSearchParams();
+  const navigate = useNavigate();
+  const { pathname } = useLocation();
 
   const handleClick = () => {
     drawerObserverRef.current.toggle();
   };
+
+  const handleChange = (event: ChangeEvent<HTMLInputElement>) => {
+    if (timerRef.current) {
+      clearTimeout(timerRef.current);
+    }
+
+    const query = event.currentTarget.value;
+
+    timerRef.current = setTimeout(() => {
+      const searchParams = new URLSearchParams();
+      searchParams.set('q', query);
+
+      if (query) {
+        navigate(`${pathname}?${searchParams.toString()}`);
+      } else {
+        navigate(pathname);
+      }
+    }, 600);
+  };
+
+  const query = searchParams.get('q');
 
   return (
     <header className="fixed top-0 left-0 w-full lg:sticky lg:top-0 bg-white border-b border-b-[var(--gray-800)] py-3 px-4 md:py-4 md:px-5 xl:py-[19px] xl:px-[41px] z-[2]">
@@ -27,6 +53,8 @@ export default function PageHeader() {
           placeholder="Search anything here"
           className="basis-[307px]"
           leftIcon={<SearchIcon width={20} height={20} />}
+          onChange={handleChange}
+          defaultValue={query ?? ''}
         />
         <UserProfile />
       </div>
