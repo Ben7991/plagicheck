@@ -1,27 +1,33 @@
 import { Injectable } from '@nestjs/common';
+import { join } from 'node:path';
 import { renderFile } from 'ejs';
-import { join } from 'path';
 
 import { BaseMailer } from './base-mailer';
+import { UserEntity } from 'src/entities/user.entity';
 import { OnEvent } from '@nestjs/event-emitter';
-import { FORGOT_PASSWORD_KEY } from './event-identifies';
-import { ForgotPasswordData } from './mailer.util';
+import { INVITATION } from './event-identifies';
 
 @Injectable()
-export class ForgotPasswordService extends BaseMailer<ForgotPasswordData> {
-  protected _configureEmailBody(data: ForgotPasswordData): Promise<string> {
-    const templatePath = join(process.cwd(), 'views', 'forgot-password.ejs');
+export class InvitationMailerService extends BaseMailer<
+  Pick<UserEntity, 'name' | 'email' | 'password' | 'id'>
+> {
+  protected override _configureEmailBody(
+    data: Pick<UserEntity, 'name' | 'email' | 'id' | 'password'>,
+  ): Promise<string> {
+    const templatePath = join(process.cwd(), 'views', 'invitation.ejs');
     return renderFile(templatePath, data);
   }
 
-  @OnEvent(FORGOT_PASSWORD_KEY)
-  async send(data: ForgotPasswordData): Promise<void> {
+  @OnEvent(INVITATION)
+  override async send(
+    data: Pick<UserEntity, 'name' | 'email' | 'id' | 'password'>,
+  ): Promise<void> {
     const mailBody = await this._configureEmailBody(data);
     const transporter = await this._createTransport();
 
     await transporter.sendMail({
       to: data.email,
-      subject: 'Password Reset for Plagiarism Checker System',
+      subject: 'Invitation to Join Plagiarism Checker System',
       html: mailBody,
       from: {
         address: this._configService.get<string>('mailer.address')!,

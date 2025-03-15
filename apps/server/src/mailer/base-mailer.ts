@@ -27,6 +27,6 @@ export abstract class BaseMailer<T> {
     return transporter;
   }
 
-  protected abstract configureEmailBody(data: T): Promise<string>;
+  protected abstract _configureEmailBody(data: T): Promise<string>;
   abstract send(data: T): Promise<void>;
 }
