@@ -144,7 +144,7 @@ export class LecturerService {
       const existingUserByEmail = await this.userRepo.find(body.email);
 
       if (!existingUserById) {
-        throw new BadRequestException('User to update is not recognized');
+        throw new BadRequestException('Lecturer to update is not recognized');
       }
 
       if (
@@ -167,7 +167,7 @@ export class LecturerService {
       );
 
       if (!existingLecturer) {
-        throw new BadRequestException('User to update is not recognized');
+        throw new BadRequestException('Lecturer to update is not recognized');
       }
 
       const oldEmail = existingUserById.email;
@@ -180,7 +180,6 @@ export class LecturerService {
       }
 
       existingUserById.name = body.name;
-      existingUserById.role = Role.LECTURER;
       existingUserById.email = body.email;
       existingUserById.phone = body.phoneNumber;
 
@@ -226,7 +225,7 @@ export class LecturerService {
       });
 
       if (!existingLecturer) {
-        throw new BadRequestException('User to delete does not exist');
+        throw new BadRequestException('Lecturer to delete does not exist');
       }
 
       existingLecturer.accountStatus = AccountStatus.SUSPENDED;
