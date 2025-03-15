@@ -1,30 +1,51 @@
 import {
+  BadRequestException,
   Body,
   ClassSerializerInterceptor,
   Controller,
+  Get,
   Post,
+  Query,
   UseFilters,
   UseInterceptors,
   ValidationPipe,
 } from '@nestjs/common';
-import { ApiResponse } from '@nestjs/swagger';
+import { ApiQuery, ApiResponse } from '@nestjs/swagger';
 
 import { LecturerService } from './lecturer.service';
 import { InternalServerErrorExceptionFilter } from 'src/internal-server-error-exception.filter';
 import { LecturerDto } from './dto/lecturer.dto';
 import { DataMessageInterceptor } from 'src/utils/interceptors/data-message.interceptor';
-import { swaggerCreateLecturer } from './lecturer.swagger';
+import {
+  swaggerCreateLecturer,
+  swaggerPaginateLecturer,
+} from './lecturer.swagger';
 
 @Controller('lecturers')
 @UseFilters(InternalServerErrorExceptionFilter)
 export class LecturerController {
-  constructor(private readonly lectuerService: LecturerService) {}
+  constructor(private readonly lecturerService: LecturerService) {}
+
+  @ApiQuery({ name: 'page', required: false })
+  @ApiQuery({ name: 'q', required: false })
+  @ApiResponse(swaggerPaginateLecturer)
+  @UseInterceptors(ClassSerializerInterceptor)
+  @Get()
+  paginate(@Query('page') page?: string, @Query('q') query?: string) {
+    const parsedPage = !page ? 0 : parseInt(page);
+
+    if (Number.isNaN(parsedPage)) {
+      throw new BadRequestException('Invalid page number');
+    }
+
+    return this.lecturerService.paginate(parsedPage, query ?? '');
+  }
 
   @ApiResponse(swaggerCreateLecturer)
   @UseInterceptors(ClassSerializerInterceptor)
   @UseInterceptors(new DataMessageInterceptor('Lecturer added successfully'))
   @Post()
   create(@Body(ValidationPipe) body: LecturerDto) {
-    return this.lectuerService.create(body);
+    return this.lecturerService.create(body);
   }
 }

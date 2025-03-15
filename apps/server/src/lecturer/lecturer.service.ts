@@ -4,7 +4,7 @@ import {
   InternalServerErrorException,
 } from '@nestjs/common';
 import { EventEmitter2 } from '@nestjs/event-emitter';
-import { DataSource } from 'typeorm';
+import { DataSource, Like } from 'typeorm';
 import { hash } from 'bcryptjs';
 
 import { LecturerDto } from './dto/lecturer.dto';
@@ -15,16 +15,51 @@ import { DepartmentEntity } from 'src/entities/department.entity';
 import { UsersRepository } from 'src/users/users.repository';
 import { INVITATION } from 'src/mailer/event-identifies';
 import { TextGenerator } from 'src/utils/text-generator.util';
+import { AccountStatus } from 'src/utils/enums/account-status.enum';
 
 @Injectable()
 export class LecturerService {
   private userRepo: UsersRepository;
+  private readonly rows = 9;
 
   constructor(
     private readonly dataSource: DataSource,
     private readonly eventEmitter: EventEmitter2,
   ) {
     this.userRepo = new UsersRepository(dataSource);
+  }
+
+  async paginate(page: number, query: string) {
+    try {
+      const count = await this.dataSource.manager.count(UserEntity, {
+        where: {
+          role: Role.LECTURER,
+          accountStatus: AccountStatus.ACTIVE,
+          name: Like(`%${query}%`),
+          email: Like(`%${query}%`),
+        },
+      });
+      const lecturers = await this.dataSource.manager.find(LecturerEntity, {
+        skip: this.rows * page,
+        take: this.rows,
+        relations: {
+          user: true,
+          department: true,
+        },
+        where: {
+          user: {
+            accountStatus: AccountStatus.ACTIVE,
+            name: Like(`%${query}%`),
+            email: Like(`%${query}%`),
+          },
+          qualification: Like(`%${query}%`),
+        },
+      });
+
+      return { count, data: lecturers };
+    } catch (error) {
+      throw new InternalServerErrorException((error as Error).message);
+    }
   }
 
   async create(body: LecturerDto) {

@@ -1,5 +1,31 @@
 import { HttpStatus } from '@nestjs/common';
 
+export const swaggerPaginateLecturer = {
+  description: 'OK',
+  status: HttpStatus.OK,
+  example: {
+    count: 1,
+    data: [
+      {
+        id: 8,
+        qualification: 'Bachelors of Computer Science',
+        user: {
+          id: 'LECT1001',
+          name: 'James Smith',
+          email: 'hidragaspi@gufum.com',
+          phone: '(026) 620-3090',
+          imagePath: null,
+          role: 'LECTURER',
+        },
+        department: {
+          id: 7,
+          name: 'Department of History',
+        },
+      },
+    ],
+  },
+};
+
 export const swaggerCreateLecturer = {
   description: 'OK',
   status: HttpStatus.CREATED,
