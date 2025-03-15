@@ -4,7 +4,7 @@ import {
   InternalServerErrorException,
 } from '@nestjs/common';
 import { EventEmitter2 } from '@nestjs/event-emitter';
-import { DataSource, Like } from 'typeorm';
+import { DataSource, Like, QueryRunner } from 'typeorm';
 import { hash } from 'bcryptjs';
 
 import { LecturerDto } from './dto/lecturer.dto';
@@ -73,6 +73,11 @@ export class LecturerService {
         throw new BadRequestException('Email already taken');
       }
 
+      const existingDepartment = await this._getDepartment(
+        body.departmentId,
+        queryRunner,
+      );
+
       const generatedText = TextGenerator.generator();
 
       const user = new UserEntity();
@@ -85,17 +90,6 @@ export class LecturerService {
       user.id = await this.userRepo.getNextId(user.role);
 
       const savedUser = await queryRunner.manager.save(user);
-
-      const existingDepartment = await queryRunner.manager.findOneBy(
-        DepartmentEntity,
-        {
-          id: body.departmentId,
-        },
-      );
-
-      if (!existingDepartment) {
-        throw new BadRequestException('Department does not exist');
-      }
 
       const lecturer = new LecturerEntity();
       lecturer.qualification = body.qualification;
@@ -125,6 +119,21 @@ export class LecturerService {
     }
   }
 
+  async _getDepartment(departmentId: number, queryRunner: QueryRunner) {
+    const existingDepartment = await queryRunner.manager.findOneBy(
+      DepartmentEntity,
+      {
+        id: departmentId,
+      },
+    );
+
+    if (!existingDepartment) {
+      throw new BadRequestException('Department does not exist');
+    }
+
+    return existingDepartment;
+  }
+
   async update(body: LecturerDto, userId: string) {
     const queryRunner = this.dataSource.createQueryRunner();
     await queryRunner.startTransaction();
@@ -145,16 +154,10 @@ export class LecturerService {
         throw new BadRequestException('Email address is already taken');
       }
 
-      const existingDepartment = await queryRunner.manager.findOneBy(
-        DepartmentEntity,
-        {
-          id: body.departmentId,
-        },
+      const existingDepartment = await this._getDepartment(
+        body.departmentId,
+        queryRunner,
       );
-
-      if (!existingDepartment) {
-        throw new BadRequestException('Department does not exist');
-      }
 
       const existingLecturer = await queryRunner.manager.findOneBy(
         LecturerEntity,
