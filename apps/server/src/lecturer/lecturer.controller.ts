@@ -4,6 +4,8 @@ import {
   ClassSerializerInterceptor,
   Controller,
   Get,
+  Param,
+  Patch,
   Post,
   Query,
   UseFilters,
@@ -19,6 +21,7 @@ import { DataMessageInterceptor } from 'src/utils/interceptors/data-message.inte
 import {
   swaggerCreateLecturer,
   swaggerPaginateLecturer,
+  swaggerUpdateLecturer,
 } from './lecturer.swagger';
 
 @Controller('lecturers')
@@ -47,5 +50,13 @@ export class LecturerController {
   @Post()
   create(@Body(ValidationPipe) body: LecturerDto) {
     return this.lecturerService.create(body);
+  }
+
+  @ApiResponse(swaggerUpdateLecturer)
+  @UseInterceptors(ClassSerializerInterceptor)
+  @UseInterceptors(new DataMessageInterceptor('Lecturer updated successfully'))
+  @Patch(':id')
+  update(@Param('id') id: string, @Body(ValidationPipe) body: LecturerDto) {
+    return this.lecturerService.update(body, id);
   }
 }

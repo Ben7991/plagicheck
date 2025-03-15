@@ -124,4 +124,91 @@ export class LecturerService {
       throw new InternalServerErrorException((error as Error).message);
     }
   }
+
+  async update(body: LecturerDto, userId: string) {
+    const queryRunner = this.dataSource.createQueryRunner();
+    await queryRunner.startTransaction();
+    await queryRunner.connect();
+
+    try {
+      const existingUserById = await this.userRepo.find(userId);
+      const existingUserByEmail = await this.userRepo.find(body.email);
+
+      if (!existingUserById) {
+        throw new BadRequestException('User to update is not recognized');
+      }
+
+      if (
+        existingUserByEmail &&
+        existingUserByEmail.id !== existingUserById.id
+      ) {
+        throw new BadRequestException('Email address is already taken');
+      }
+
+      const existingDepartment = await queryRunner.manager.findOneBy(
+        DepartmentEntity,
+        {
+          id: body.departmentId,
+        },
+      );
+
+      if (!existingDepartment) {
+        throw new BadRequestException('Department does not exist');
+      }
+
+      const existingLecturer = await queryRunner.manager.findOneBy(
+        LecturerEntity,
+        {
+          user: existingUserById,
+        },
+      );
+
+      if (!existingLecturer) {
+        throw new BadRequestException('User to update is not recognized');
+      }
+
+      const oldEmail = existingUserById.email;
+      const newEmail = body.email;
+      const generatedText = TextGenerator.generator();
+
+      if (oldEmail !== newEmail) {
+        const saltRound = 12;
+        existingUserById.password = await hash(generatedText, saltRound);
+      }
+
+      existingUserById.name = body.name;
+      existingUserById.role = Role.LECTURER;
+      existingUserById.email = body.email;
+      existingUserById.phone = body.phoneNumber;
+
+      const savedUser = await queryRunner.manager.save(existingUserById);
+
+      existingLecturer.qualification = body.qualification;
+      existingLecturer.department = existingDepartment;
+      existingLecturer.user = savedUser;
+      const savedLecturer = await queryRunner.manager.save(existingLecturer);
+
+      await queryRunner.commitTransaction();
+
+      if (oldEmail !== newEmail) {
+        this.eventEmitter.emit(INVITATION, {
+          id: savedLecturer.user.id,
+          role: savedLecturer.user.role,
+          email: savedLecturer.user.email,
+          password: generatedText,
+          name: savedLecturer.user.name,
+        });
+      }
+
+      return savedLecturer;
+    } catch (error) {
+      await queryRunner.rollbackTransaction();
+
+      if (error instanceof BadRequestException) {
+        throw new BadRequestException((error as Error).message);
+      }
+
+      throw new InternalServerErrorException((error as Error).message);
+    }
+  }
 }
