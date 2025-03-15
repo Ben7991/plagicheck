@@ -73,3 +73,11 @@ export const swaggerUpdateLecturer = {
     },
   },
 };
+
+export const swaggerRemoveLecturer = {
+  description: 'OK',
+  status: HttpStatus.OK,
+  example: {
+    message: 'Lecturer removed successfully',
+  },
+};

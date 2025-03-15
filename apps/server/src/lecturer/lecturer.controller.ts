@@ -3,6 +3,7 @@ import {
   Body,
   ClassSerializerInterceptor,
   Controller,
+  Delete,
   Get,
   Param,
   Patch,
@@ -21,6 +22,7 @@ import { DataMessageInterceptor } from 'src/utils/interceptors/data-message.inte
 import {
   swaggerCreateLecturer,
   swaggerPaginateLecturer,
+  swaggerRemoveLecturer,
   swaggerUpdateLecturer,
 } from './lecturer.swagger';
 
@@ -58,5 +60,11 @@ export class LecturerController {
   @Patch(':id')
   update(@Param('id') id: string, @Body(ValidationPipe) body: LecturerDto) {
     return this.lecturerService.update(body, id);
+  }
+
+  @ApiResponse(swaggerRemoveLecturer)
+  @Delete(':id')
+  remove(@Param('id') id: string) {
+    return this.lecturerService.remove(id);
   }
 }

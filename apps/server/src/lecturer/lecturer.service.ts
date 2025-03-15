@@ -211,4 +211,34 @@ export class LecturerService {
       throw new InternalServerErrorException((error as Error).message);
     }
   }
+
+  async remove(userId: string) {
+    const queryRunner = this.dataSource.createQueryRunner();
+    await queryRunner.startTransaction();
+    await queryRunner.connect();
+
+    try {
+      const existingLecturer = await queryRunner.manager.findOneBy(UserEntity, {
+        id: userId,
+      });
+
+      if (!existingLecturer) {
+        throw new BadRequestException('User to delete does not exist');
+      }
+
+      existingLecturer.accountStatus = AccountStatus.SUSPENDED;
+      await queryRunner.manager.save(existingLecturer);
+      await queryRunner.commitTransaction();
+
+      return { message: 'Lecturer removed successfully' };
+    } catch (error) {
+      await queryRunner.rollbackTransaction();
+
+      if (error instanceof BadRequestException) {
+        throw new BadRequestException((error as Error).message);
+      }
+
+      throw new InternalServerErrorException((error as Error).message);
+    }
+  }
 }
