@@ -10,10 +10,11 @@ import {
   Post,
   Query,
   UseFilters,
+  UseGuards,
   UseInterceptors,
   ValidationPipe,
 } from '@nestjs/common';
-import { ApiQuery, ApiResponse } from '@nestjs/swagger';
+import { ApiBearerAuth, ApiQuery, ApiResponse } from '@nestjs/swagger';
 
 import { LecturerService } from './lecturer.service';
 import { InternalServerErrorExceptionFilter } from 'src/internal-server-error-exception.filter';
@@ -25,7 +26,13 @@ import {
   swaggerRemoveLecturer,
   swaggerUpdateLecturer,
 } from './lecturer.swagger';
+import { Role } from 'src/utils/enums/role.enum';
+import { AccessRole } from 'src/utils/decorators/acces-role.decorator';
+import { RolesGuard } from 'src/utils/guards/roles.guard';
+import { AuthGuard } from 'src/auth/auth.guard';
 
+@ApiBearerAuth()
+@UseGuards(AuthGuard)
 @Controller('lecturers')
 @UseFilters(InternalServerErrorExceptionFilter)
 export class LecturerController {
@@ -49,6 +56,8 @@ export class LecturerController {
   @ApiResponse(swaggerCreateLecturer)
   @UseInterceptors(ClassSerializerInterceptor)
   @UseInterceptors(new DataMessageInterceptor('Lecturer added successfully'))
+  @AccessRole(Role.ADMIN)
+  @UseGuards(RolesGuard)
   @Post()
   create(@Body(ValidationPipe) body: LecturerDto) {
     return this.lecturerService.create(body);
@@ -57,12 +66,16 @@ export class LecturerController {
   @ApiResponse(swaggerUpdateLecturer)
   @UseInterceptors(ClassSerializerInterceptor)
   @UseInterceptors(new DataMessageInterceptor('Lecturer updated successfully'))
+  @AccessRole(Role.ADMIN)
+  @UseGuards(RolesGuard)
   @Patch(':id')
   update(@Param('id') id: string, @Body(ValidationPipe) body: LecturerDto) {
     return this.lecturerService.update(body, id);
   }
 
   @ApiResponse(swaggerRemoveLecturer)
+  @AccessRole(Role.ADMIN)
+  @UseGuards(RolesGuard)
   @Delete(':id')
   remove(@Param('id') id: string) {
     return this.lecturerService.remove(id);

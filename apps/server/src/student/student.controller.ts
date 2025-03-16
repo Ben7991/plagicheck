@@ -10,10 +10,11 @@ import {
   Post,
   Query,
   UseFilters,
+  UseGuards,
   UseInterceptors,
   ValidationPipe,
 } from '@nestjs/common';
-import { ApiQuery, ApiResponse } from '@nestjs/swagger';
+import { ApiBearerAuth, ApiQuery, ApiResponse } from '@nestjs/swagger';
 
 import { StudentService } from './student.service';
 import { StudentDto } from './dto/student.dto';
@@ -25,7 +26,13 @@ import {
   swaggerRemoveStudent,
   swaggerUpdateStudent,
 } from './student.swagger';
+import { AuthGuard } from 'src/auth/auth.guard';
+import { AccessRole } from 'src/utils/decorators/acces-role.decorator';
+import { Role } from 'src/utils/enums/role.enum';
+import { RolesGuard } from 'src/utils/guards/roles.guard';
 
+@ApiBearerAuth()
+@UseGuards(AuthGuard)
 @UseFilters(InternalServerErrorExceptionFilter)
 @Controller('students')
 export class StudentController {
@@ -49,6 +56,8 @@ export class StudentController {
   @ApiResponse(swaggerCreateStudent)
   @UseInterceptors(ClassSerializerInterceptor)
   @UseInterceptors(new DataMessageInterceptor('Student added successfully'))
+  @AccessRole(Role.ADMIN)
+  @UseGuards(RolesGuard)
   @Post()
   create(@Body(ValidationPipe) body: StudentDto) {
     return this.studentService.create(body);
@@ -57,12 +66,16 @@ export class StudentController {
   @ApiResponse(swaggerUpdateStudent)
   @UseInterceptors(ClassSerializerInterceptor)
   @UseInterceptors(new DataMessageInterceptor('Student updated successfully'))
+  @AccessRole(Role.ADMIN)
+  @UseGuards(RolesGuard)
   @Patch(':id')
   update(@Param('id') id: string, @Body(ValidationPipe) body: StudentDto) {
     return this.studentService.update(body, id);
   }
 
   @ApiResponse(swaggerRemoveStudent)
+  @AccessRole(Role.ADMIN)
+  @UseGuards(RolesGuard)
   @Delete(':id')
   remove(@Param('id') id: string) {
     return this.studentService.remove(id);
