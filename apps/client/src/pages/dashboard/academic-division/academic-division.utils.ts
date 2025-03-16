@@ -30,7 +30,7 @@ export async function getFaculties(
     const result = await refreshAccessToken();
 
     if (result) {
-      return await getFaculties(all, page);
+      return await getFaculties(all, page, query);
     } else {
       throw new Error('UN_AUTHORIZED');
     }
