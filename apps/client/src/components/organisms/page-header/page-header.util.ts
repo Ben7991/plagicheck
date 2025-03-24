@@ -5,3 +5,7 @@ export type SubPageHeaderProps = {
   description: string;
   children?: ReactNode;
 };
+
+export type PageHeaderProps = {
+  searchRootPath?: string;
+};

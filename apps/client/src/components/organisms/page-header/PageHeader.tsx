@@ -7,8 +7,9 @@ import { MobileDrawerObserver } from '../../../util/observer/mobile-drawer.obser
 import FormControl from '../../atoms/form-elements/form-control/FormControl';
 import SearchIcon from '../../atoms/icons/SearchIcon';
 import UserProfile from '../../molecules/user-profile/UserProfile';
+import { PageHeaderProps } from './page-header.util';
 
-export default function PageHeader() {
+export default function PageHeader({ searchRootPath }: PageHeaderProps) {
   const timerRef = useRef<NodeJS.Timeout>();
   const drawerObserverRef = useRef(MobileDrawerObserver.getInstance());
   const [searchParams] = useSearchParams();
@@ -30,10 +31,18 @@ export default function PageHeader() {
       const searchParams = new URLSearchParams();
       searchParams.set('q', query);
 
-      if (query) {
-        navigate(`${pathname}?${searchParams.toString()}`);
+      let path = '';
+
+      if (searchRootPath) {
+        path = `${searchRootPath}&${searchParams.toString()}`;
       } else {
-        navigate(pathname);
+        path = `${pathname}?${searchParams.toString()}`;
+      }
+
+      if (query) {
+        navigate(path);
+      } else {
+        navigate(searchRootPath ?? pathname);
       }
     }, 600);
   };
