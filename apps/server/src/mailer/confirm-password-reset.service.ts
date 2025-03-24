@@ -10,7 +10,7 @@ import { CONFIRM_PASSWORD_RESET } from './event-identifies';
 export class ConfirmPasswordResetService extends BaseMailer<
   Pick<UserEntity, 'name' | 'email'>
 > {
-  protected override configureEmailBody(
+  protected override _configureEmailBody(
     data: Pick<UserEntity, 'name' | 'email'>,
   ): Promise<string> {
     const templatePath = join(
@@ -23,7 +23,7 @@ export class ConfirmPasswordResetService extends BaseMailer<
 
   @OnEvent(CONFIRM_PASSWORD_RESET)
   override async send(data: Pick<UserEntity, 'name' | 'email'>): Promise<void> {
-    const mailBody = await this.configureEmailBody(data);
+    const mailBody = await this._configureEmailBody(data);
     const transporter = await this._createTransport();
 
     await transporter.sendMail({

@@ -13,6 +13,8 @@ import { UsersModule } from './users/users.module';
 import { MailerModule } from './mailer/mailer.module';
 import { FacultyModule } from './faculty/faculty.module';
 import { DepartmentModule } from './department/department.module';
+import { LecturerModule } from './lecturer/lecturer.module';
+import { StudentModule } from './student/student.module';
 import envConfig from './config/env.config';
 
 @Module({
@@ -45,6 +47,8 @@ import envConfig from './config/env.config';
     MailerModule,
     FacultyModule,
     DepartmentModule,
+    LecturerModule,
+    StudentModule,
   ],
   controllers: [AppController],
   providers: [AppService],

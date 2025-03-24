@@ -3,11 +3,14 @@ import {
   Entity,
   JoinColumn,
   ManyToOne,
+  OneToMany,
   PrimaryGeneratedColumn,
 } from 'typeorm';
 import { FacultyEntity } from './faculty.entity';
 import { AvailabilityStatus } from 'src/utils/enums/availability-status.enum';
 import { Exclude } from 'class-transformer';
+import { LecturerEntity } from './lecturer.entity';
+import { StudentEntity } from './student.entity';
 
 @Entity('departments')
 export class DepartmentEntity {
@@ -32,4 +35,10 @@ export class DepartmentEntity {
   })
   @Exclude()
   status: AvailabilityStatus;
+
+  @OneToMany(() => LecturerEntity, (lecturer) => lecturer.department)
+  lecturers: LecturerEntity[];
+
+  @OneToMany(() => StudentEntity, (student) => student.department)
+  students: StudentEntity[];
 }

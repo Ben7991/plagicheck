@@ -1,6 +1,6 @@
-import { AlertProps } from '../../../components/molecules/alert/alert.util';
-import { Department } from '../../../util/types/department.type';
-import { Faculty } from '../../../util/types/faculty.type';
+import { Department } from '@util/types/department.type';
+import { Faculty } from '@util/types/faculty.type';
+import { ModalFormProps } from '@util/types/modal-form.type';
 
 export type DepartmentListProps = {
   departments: Department[];
@@ -9,18 +9,11 @@ export type DepartmentListProps = {
   onSelectDepartment: (item: Department) => void;
 };
 
-type EntityModalProps = {
-  currentAction: 'add' | 'edit' | 'delete';
-  onCancel: VoidFunction;
-  onSetAlertInfo: (value: Omit<AlertProps, 'onHide'>) => void;
-  onShowAlert: VoidFunction;
-};
-
-export type FacultyFormProps = EntityModalProps & {
+export type FacultyFormProps = ModalFormProps & {
   selectedFaculty?: Faculty;
 };
 
-export type DepartmentFormProps = EntityModalProps & {
+export type DepartmentFormProps = ModalFormProps & {
   selectedDepartment?: Department;
   selectedFacultyId?: number;
 };

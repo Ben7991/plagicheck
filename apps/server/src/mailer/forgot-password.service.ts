@@ -9,14 +9,14 @@ import { ForgotPasswordData } from './mailer.util';
 
 @Injectable()
 export class ForgotPasswordService extends BaseMailer<ForgotPasswordData> {
-  protected configureEmailBody(data: ForgotPasswordData): Promise<string> {
+  protected _configureEmailBody(data: ForgotPasswordData): Promise<string> {
     const templatePath = join(process.cwd(), 'views', 'forgot-password.ejs');
     return renderFile(templatePath, data);
   }
 
   @OnEvent(FORGOT_PASSWORD_KEY)
   async send(data: ForgotPasswordData): Promise<void> {
-    const mailBody = await this.configureEmailBody(data);
+    const mailBody = await this._configureEmailBody(data);
     const transporter = await this._createTransport();
 
     await transporter.sendMail({

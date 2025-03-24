@@ -6,7 +6,6 @@ import { Department } from '../../../util/types/department.type';
 
 const initialState: FacultyState = {
   data: [],
-  hasData: false,
   count: 0,
 };
 
@@ -20,7 +19,6 @@ const facultySlice = createSlice({
     ) => {
       state.data = action.payload.data;
       state.count = action.payload.count;
-      state.hasData = true;
     },
     addFaculty: (state, action: PayloadAction<Faculty>) => {
       state.count++;

@@ -7,20 +7,20 @@ import {
   FacultyForm,
 } from './academic-division.partials';
 import { getFaculties } from './academic-division.utils';
-import { useAppDispatch, useAppSelector } from '../../../store/store.util';
-import { loadFaculties } from '../../../store/slice/faculty/faculty.slice';
-import { useAlert } from '../../../util/hooks/use-alert/useAlert';
-import Button from '../../../components/atoms/button/Button';
-import PageHeader from '../../../components/organisms/page-header/PageHeader';
-import SubPageHeader from '../../../components/organisms/page-header/SubPageHeader';
-import Modal from '../../../components/organisms/modal/Modal';
-import DataTable from '../../../components/organisms/data-table/DataTable';
-import MainContent from '../../../components/atoms/main-content/MainContent';
+import { useAppDispatch, useAppSelector } from '@store/store.util';
+import { loadFaculties } from '@store/slice/faculty/faculty.slice';
+import { useAlert } from '@util/hooks/use-alert/useAlert';
+import Button from '@components/atoms/button/Button';
+import PageHeader from '@components/organisms/page-header/PageHeader';
+import SubPageHeader from '@components/organisms/page-header/SubPageHeader';
+import Modal from '@components/organisms/modal/Modal';
+import DataTable from '@components/organisms/data-table/DataTable';
+import MainContent from '@components/atoms/main-content/MainContent';
 import ErrorBoundary from '../../error/error-boundary/ErrorBoundary';
-import Paginator from '../../../components/organisms/paginator/Paginator';
-import Alert from '../../../components/molecules/alert/Alert';
-import { Faculty } from '../../../util/types/faculty.type';
-import { Department } from '../../../util/types/department.type';
+import Paginator from '@components/organisms/paginator/Paginator';
+import Alert from '@components/molecules/alert/Alert';
+import { Faculty } from '@util/types/faculty.type';
+import { Department } from '@util/types/department.type';
 
 export default function AcademicDivision() {
   const dispatch = useAppDispatch();
