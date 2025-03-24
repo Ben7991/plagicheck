@@ -1,9 +1,10 @@
 import { object, string } from 'yup';
 
-import { HttpStatus } from '../../../util/enum/http-status.enum';
-import { getToken } from '../../../util/get-token.util';
-import { processedStatusCode } from '../../../util/processed-status-code.util';
-import { refreshAccessToken } from '../../../util/refresh-token.util';
+import { HttpStatus } from '@util/enum/http-status.enum';
+import { getToken } from '@util/get-token.util';
+import { processedStatusCode } from '@util/processed-status-code.util';
+import { refreshAccessToken } from '@util/refresh-token.util';
+import { getAuthHeaders } from '@util/http-handler.util';
 
 export async function getFaculties(
   all: boolean = false,
@@ -31,6 +32,33 @@ export async function getFaculties(
 
     if (result) {
       return await getFaculties(all, page, query);
+    } else {
+      throw new Error('UN_AUTHORIZED');
+    }
+  }
+
+  return result;
+}
+
+export async function getDepartments() {
+  const token = getToken();
+  const response = await fetch('http://localhost:3000/api/departments', {
+    method: 'GET',
+    credentials: 'include',
+    headers: {
+      authorization: `Bearer ${token}`,
+    },
+  });
+
+  const result = await response.json();
+
+  if (processedStatusCode.includes(response.status)) {
+    throw new Error(result.message);
+  } else if (response.status === HttpStatus.UN_AUTHORIZED) {
+    const result = await refreshAccessToken();
+
+    if (result) {
+      return await getDepartments();
     } else {
       throw new Error('UN_AUTHORIZED');
     }
@@ -143,10 +171,7 @@ export async function createDepartment(data: {
     method: 'POST',
     body: JSON.stringify(data),
     credentials: 'include',
-    headers: {
-      'Content-Type': 'application/json',
-      authorization: `Bearer ${token}`,
-    },
+    headers: getAuthHeaders(token),
   });
   const result = await response.json();
 
@@ -179,10 +204,7 @@ export async function updateDepartment(
       method: 'PATCH',
       body: JSON.stringify(data),
       credentials: 'include',
-      headers: {
-        'Content-Type': 'application/json',
-        authorization: `Bearer ${token}`,
-      },
+      headers: getAuthHeaders(token),
     },
   );
   const result = await response.json();
@@ -209,10 +231,7 @@ export async function deleteDepartment(departmentId: number) {
     {
       method: 'DELETE',
       credentials: 'include',
-      headers: {
-        'Content-Type': 'application/json',
-        authorization: `Bearer ${token}`,
-      },
+      headers: getAuthHeaders(token),
     },
   );
   const result = await response.json();
@@ -230,22 +249,4 @@ export async function deleteDepartment(departmentId: number) {
   }
 
   return result;
-}
-
-export function getButtonText(currentAction: 'add' | 'edit' | 'delete') {
-  let buttonText = '';
-
-  if (currentAction === 'add') {
-    buttonText = 'Add';
-  } else if (currentAction === 'edit') {
-    buttonText = 'Save';
-  } else {
-    buttonText = 'Yes, delete';
-  }
-
-  return buttonText;
-}
-
-export function isActionAddOrEdit(currentAction: 'add' | 'edit' | 'delete') {
-  return ['add', 'edit'].includes(currentAction);
 }

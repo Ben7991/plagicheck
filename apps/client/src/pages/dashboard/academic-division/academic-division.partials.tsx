@@ -14,7 +14,7 @@ import {
   DepartmentListProps,
   FacultyFormProps,
 } from './academic-division.types';
-import { Faculty } from '../../../util/types/faculty.type';
+import { Faculty } from '@util/types/faculty.type';
 import {
   createFaculty,
   academicDivisionSchema,
@@ -23,12 +23,11 @@ import {
   updateFaculty,
   deleteFaculty,
   updateDepartment,
-  getButtonText,
-  isActionAddOrEdit,
   deleteDepartment,
 } from './academic-division.utils';
-import { AlertVariant } from '../../../util/enum/alert-variant.enum';
-import { useAppDispatch } from '../../../store/store.util';
+import { getButtonText, isActionAddOrEdit } from '@util/action-handler.util';
+import { AlertVariant } from '@util/enum/alert-variant.enum';
+import { useAppDispatch } from '@store/store.util';
 import {
   addFaculty,
   updateFaculty as editFaculty,
@@ -36,16 +35,16 @@ import {
   addDepartment,
   updateDepartment as editDepartment,
   removeFaculty,
-} from '../../../store/slice/faculty/faculty.slice';
-import Button from '../../../components/atoms/button/Button';
-import FormControl from '../../../components/atoms/form-elements/form-control/FormControl';
-import FormFooter from '../../../components/atoms/form-elements/form-footer/FormFooter';
-import FormGroup from '../../../components/atoms/form-elements/form-group/FormGroup';
-import Label from '../../../components/atoms/form-elements/label/Label';
-import MultiSelect from '../../../components/molecules/multi-select/MultiSelect';
-import FormControlError from '../../../components/atoms/form-elements/form-control-error/FormControlError';
-import TrashIcon from '../../../components/atoms/icons/TrashIcon';
-import PencilIcon from '../../../components/atoms/icons/PencilIcon';
+} from '@store/slice/faculty/faculty.slice';
+import Button from '@components/atoms/button/Button';
+import FormControl from '@components/atoms/form-elements/form-control/FormControl';
+import FormFooter from '@components/atoms/form-elements/form-footer/FormFooter';
+import FormGroup from '@components/atoms/form-elements/form-group/FormGroup';
+import Label from '@components/atoms/form-elements/label/Label';
+import MultiSelect from '@components/molecules/multi-select/MultiSelect';
+import FormControlError from '@components/atoms/form-elements/form-control-error/FormControlError';
+import TrashIcon from '@components/atoms/icons/TrashIcon';
+import PencilIcon from '@components/atoms/icons/PencilIcon';
 
 export function FacultyForm({
   currentAction,
