@@ -4,7 +4,7 @@ import {
   InternalServerErrorException,
 } from '@nestjs/common';
 import { EventEmitter2 } from '@nestjs/event-emitter';
-import { DataSource, Like, QueryRunner } from 'typeorm';
+import { DataSource, QueryRunner } from 'typeorm';
 import { hash } from 'bcryptjs';
 
 import { LecturerDto } from './dto/lecturer.dto';
@@ -31,30 +31,38 @@ export class LecturerService {
 
   async paginate(page: number, query: string) {
     try {
-      const count = await this.dataSource.manager.count(UserEntity, {
-        where: {
-          role: Role.LECTURER,
-          accountStatus: AccountStatus.ACTIVE,
-          name: Like(`%${query}%`),
-          email: Like(`%${query}%`),
-        },
-      });
-      const lecturers = await this.dataSource.manager.find(LecturerEntity, {
-        skip: this.rows * page,
-        take: this.rows,
-        relations: {
-          user: true,
-          department: true,
-        },
-        where: {
-          user: {
-            accountStatus: AccountStatus.ACTIVE,
-            name: Like(`%${query}%`),
-            email: Like(`%${query}%`),
-          },
-          qualification: Like(`%${query}%`),
-        },
-      });
+      const count = await this.dataSource.manager
+        .getRepository(LecturerEntity)
+        .createQueryBuilder('lecturers')
+        .innerJoinAndSelect(
+          'lecturers.user',
+          'users',
+          'users.account_status=:status',
+          { status: AccountStatus.ACTIVE },
+        )
+        .where('users.name LIKE :name OR users.email LIKE :email', {
+          name: `%${query}%`,
+          email: `%${query}%`,
+        })
+        .getCount();
+      const lecturers = await this.dataSource.manager
+        .getRepository(LecturerEntity)
+        .createQueryBuilder('lecturers')
+        .innerJoinAndSelect(
+          'lecturers.user',
+          'users',
+          'users.account_status=:status',
+          { status: AccountStatus.ACTIVE },
+        )
+        .innerJoinAndSelect('lecturers.department', 'departments')
+        .where('users.name LIKE :name OR users.email LIKE :email', {
+          name: `%${query}%`,
+          email: `%${query}%`,
+        })
+        .take(this.rows)
+        .skip(page * this.rows)
+        .orderBy('lecturers.id', 'DESC')
+        .getMany();
 
       return { count, data: lecturers };
     } catch (error) {

@@ -3,6 +3,7 @@ import {
   ClassSerializerInterceptor,
   Controller,
   Delete,
+  Get,
   Param,
   ParseIntPipe,
   Patch,
@@ -34,6 +35,12 @@ import { RolesGuard } from 'src/utils/guards/roles.guard';
 @Controller('departments')
 export class DepartmentController {
   constructor(private readonly departmentService: DepartmentService) {}
+
+  @UseInterceptors(ClassSerializerInterceptor)
+  @Get()
+  findAll() {
+    return this.departmentService.findAll();
+  }
 
   @ApiResponse(swaggerCreateDepartment)
   @AccessRole(Role.ADMIN)

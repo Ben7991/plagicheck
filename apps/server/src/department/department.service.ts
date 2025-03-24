@@ -13,6 +13,15 @@ import { AvailabilityStatus } from 'src/utils/enums/availability-status.enum';
 export class DepartmentService {
   constructor(private readonly dataSource: DataSource) {}
 
+  async findAll() {
+    try {
+      const departments = await this.dataSource.manager.find(DepartmentEntity);
+      return { data: departments };
+    } catch (error) {
+      throw new InternalServerErrorException((error as Error).message);
+    }
+  }
+
   async create(name: string, facultyId: number) {
     const queryRunner = this.dataSource.createQueryRunner();
     await queryRunner.startTransaction();
