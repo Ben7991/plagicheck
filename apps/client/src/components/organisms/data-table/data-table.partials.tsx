@@ -25,7 +25,7 @@ export const DataTableActionHolder = forwardRef<
         <BsThreeDotsVertical />
       </button>
       {showActions && (
-        <div className="absolute bg-white rounded-lg border border-[var(--gray-1000)] shadow-lg w-[179px] flex flex-col gap-2 lg:gap-4 p-2 lg:p-4 z-[2] right-0">
+        <div className="absolute bg-white rounded-lg border border-[var(--gray-1000)] shadow-lg w-[190px] flex flex-col gap-2 lg:gap-4 p-2 lg:p-4 z-[2] right-0">
           {children}
         </div>
       )}
