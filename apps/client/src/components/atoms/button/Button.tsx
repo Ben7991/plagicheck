@@ -16,7 +16,7 @@ export default function Button(props: ButtonProps | AnchorProps): JSX.Element {
       break;
     case 'secondary':
       variantStyle =
-        'py-[10px] border border-[var(--gray-700)] bg-[var(--gray-100)] text-[var(--black-300)] hover:bg-[var(--gray-1000)] active:bg-[var(--gray-900)]';
+        'py-[10px] border border-[var(--gray-700)] text-[var(--black-300)] hover:bg-[var(--gray-1000)] active:bg-[var(--gray-900)]';
       break;
   }
 
