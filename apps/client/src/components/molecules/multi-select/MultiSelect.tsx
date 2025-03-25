@@ -6,22 +6,25 @@ import CaretUp from '../../atoms/icons/CaretUp';
 
 export default function MultiSelect({
   list,
+  placeholderText,
+  prefix,
+  className,
   selectedItem,
   onSelectItem,
 }: MultiSelectProps) {
   const [showList, setShowList] = useState(false);
 
   return (
-    <div className="relative">
+    <div className={`relative ${className ? className : ''}`}>
       <button
-        className="w-full border border-[var(--gray-700)] flex items-center justify-between px-4 py-[10px] rounded-lg cursor-pointer text-start"
+        className="w-full border border-[var(--gray-700)] flex items-center justify-between px-4 py-[10px] rounded-lg cursor-pointer text-start hover:border-blue-600"
         type="button"
         onClick={() => setShowList(!showList)}
       >
         <span className={`${!selectedItem && 'text-[var(--gray-700)]'}`}>
           {selectedItem
-            ? selectedItem.name
-            : 'Assign department to a faculty here'}
+            ? `${prefix ? prefix : ''}${selectedItem.name}`
+            : placeholderText}
         </span>
         {showList ? <CaretUp /> : <CaretDown />}
       </button>

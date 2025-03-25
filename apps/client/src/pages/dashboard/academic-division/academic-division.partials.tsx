@@ -369,6 +369,7 @@ export function DepartmentForm({
           <FormGroup className="mb-4">
             <Label htmlFor="select_faculty">Select faculty</Label>
             <MultiSelect
+              placeholderText="Assign department to a faculty here"
               list={faculties}
               onSelectItem={setSelectedFaculty}
               selectedItem={selectedFaculty}
