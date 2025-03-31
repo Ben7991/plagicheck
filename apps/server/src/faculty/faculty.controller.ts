@@ -30,7 +30,7 @@ import {
 import { FacultyEntity } from 'src/entities/faculty.entity';
 import { InternalServerErrorExceptionFilter } from 'src/internal-server-error-exception.filter';
 import { AuthGuard } from 'src/auth/auth.guard';
-import { AccessRole } from 'src/utils/decorators/acces-role.decorator';
+import { AccessRoles } from 'src/utils/decorators/acces-role.decorator';
 import { Role } from 'src/utils/enums/role.enum';
 import { RolesGuard } from 'src/utils/guards/roles.guard';
 
@@ -66,7 +66,7 @@ export class FacultyController {
   }
 
   @ApiResponse(swaggerCreateFaculty)
-  @AccessRole(Role.ADMIN)
+  @AccessRoles([Role.ADMIN])
   @UseGuards(RolesGuard)
   @UseInterceptors(ClassSerializerInterceptor)
   @UseInterceptors(
@@ -78,7 +78,7 @@ export class FacultyController {
   }
 
   @ApiResponse(swaggerUpdateFaculty)
-  @AccessRole(Role.ADMIN)
+  @AccessRoles([Role.ADMIN])
   @UseGuards(RolesGuard)
   @UseInterceptors(new DataMessageInterceptor('Faculty updated successfully'))
   @Patch(':id')
@@ -90,7 +90,7 @@ export class FacultyController {
   }
 
   @ApiResponse(swaggerRemoveFaculty)
-  @AccessRole(Role.ADMIN)
+  @AccessRoles([Role.ADMIN])
   @UseGuards(RolesGuard)
   @Delete(':id')
   remove(@Param('id', ParseIntPipe) id: string) {

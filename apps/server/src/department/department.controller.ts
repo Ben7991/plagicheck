@@ -25,7 +25,7 @@ import {
 } from './department.swagger';
 import { AuthGuard } from 'src/auth/auth.guard';
 import { InternalServerErrorExceptionFilter } from 'src/internal-server-error-exception.filter';
-import { AccessRole } from 'src/utils/decorators/acces-role.decorator';
+import { AccessRoles } from 'src/utils/decorators/acces-role.decorator';
 import { Role } from 'src/utils/enums/role.enum';
 import { RolesGuard } from 'src/utils/guards/roles.guard';
 
@@ -37,13 +37,15 @@ export class DepartmentController {
   constructor(private readonly departmentService: DepartmentService) {}
 
   @UseInterceptors(ClassSerializerInterceptor)
+  @AccessRoles([Role.ADMIN, Role.LECTURER])
+  @UseGuards(RolesGuard)
   @Get()
   findAll() {
     return this.departmentService.findAll();
   }
 
   @ApiResponse(swaggerCreateDepartment)
-  @AccessRole(Role.ADMIN)
+  @AccessRoles([Role.ADMIN])
   @UseGuards(RolesGuard)
   @UseInterceptors(ClassSerializerInterceptor)
   @UseInterceptors(new DataMessageInterceptor('Department added successfully'))
@@ -53,7 +55,7 @@ export class DepartmentController {
   }
 
   @ApiResponse(swaggerUpdateDepartment)
-  @AccessRole(Role.ADMIN)
+  @AccessRoles([Role.ADMIN])
   @UseGuards(RolesGuard)
   @UseInterceptors(ClassSerializerInterceptor)
   @UseInterceptors(
@@ -68,7 +70,7 @@ export class DepartmentController {
   }
 
   @ApiResponse(swaggerRemoveDepartment)
-  @AccessRole(Role.ADMIN)
+  @AccessRoles([Role.ADMIN])
   @UseGuards(RolesGuard)
   @Delete(':id')
   remove(@Param('id', ParseIntPipe) id: string) {

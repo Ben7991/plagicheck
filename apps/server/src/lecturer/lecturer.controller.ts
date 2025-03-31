@@ -27,7 +27,7 @@ import {
   swaggerUpdateLecturer,
 } from './lecturer.swagger';
 import { Role } from 'src/utils/enums/role.enum';
-import { AccessRole } from 'src/utils/decorators/acces-role.decorator';
+import { AccessRoles } from 'src/utils/decorators/acces-role.decorator';
 import { RolesGuard } from 'src/utils/guards/roles.guard';
 import { AuthGuard } from 'src/auth/auth.guard';
 
@@ -56,7 +56,7 @@ export class LecturerController {
   @ApiResponse(swaggerCreateLecturer)
   @UseInterceptors(ClassSerializerInterceptor)
   @UseInterceptors(new DataMessageInterceptor('Lecturer added successfully'))
-  @AccessRole(Role.ADMIN)
+  @AccessRoles([Role.ADMIN])
   @UseGuards(RolesGuard)
   @Post()
   create(@Body(ValidationPipe) body: LecturerDto) {
@@ -66,7 +66,7 @@ export class LecturerController {
   @ApiResponse(swaggerUpdateLecturer)
   @UseInterceptors(ClassSerializerInterceptor)
   @UseInterceptors(new DataMessageInterceptor('Lecturer updated successfully'))
-  @AccessRole(Role.ADMIN)
+  @AccessRoles([Role.ADMIN])
   @UseGuards(RolesGuard)
   @Patch(':id')
   update(@Param('id') id: string, @Body(ValidationPipe) body: LecturerDto) {
@@ -74,7 +74,7 @@ export class LecturerController {
   }
 
   @ApiResponse(swaggerRemoveLecturer)
-  @AccessRole(Role.ADMIN)
+  @AccessRoles([Role.ADMIN])
   @UseGuards(RolesGuard)
   @Delete(':id')
   remove(@Param('id') id: string) {

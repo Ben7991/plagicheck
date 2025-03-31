@@ -12,12 +12,19 @@ import {
   Query,
   StreamableFile,
   UploadedFile,
+  UseFilters,
+  UseGuards,
   UseInterceptors,
 } from '@nestjs/common';
 import { ArchiveService } from './archive.service';
 import { FileInterceptor } from '@nestjs/platform-express';
 import { CreateArchiveDto } from './dto/create-archive.dto';
-import { ApiConsumes, ApiQuery, ApiResponse } from '@nestjs/swagger';
+import {
+  ApiBearerAuth,
+  ApiConsumes,
+  ApiQuery,
+  ApiResponse,
+} from '@nestjs/swagger';
 
 import { archiveMulterOptions } from './archive.util';
 import { DataMessageInterceptor } from 'src/utils/interceptors/data-message.interceptor';
@@ -26,7 +33,17 @@ import {
   swaggerPaginateArchive,
   swaggerRemoveArchive,
 } from './archive.swagger';
+import { AuthGuard } from 'src/auth/auth.guard';
+import { InternalServerErrorExceptionFilter } from 'src/internal-server-error-exception.filter';
+import { AccessRoles } from 'src/utils/decorators/acces-role.decorator';
+import { Role } from 'src/utils/enums/role.enum';
+import { RolesGuard } from 'src/utils/guards/roles.guard';
 
+@ApiBearerAuth()
+@UseGuards(AuthGuard)
+@AccessRoles([Role.ADMIN, Role.LECTURER])
+@UseGuards(RolesGuard)
+@UseFilters(InternalServerErrorExceptionFilter)
 @Controller('archives')
 export class ArchiveController {
   constructor(private readonly archiveService: ArchiveService) {}
