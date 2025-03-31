@@ -40,9 +40,8 @@ import { Role } from 'src/utils/enums/role.enum';
 import { RolesGuard } from 'src/utils/guards/roles.guard';
 
 @ApiBearerAuth()
-@UseGuards(AuthGuard)
-@AccessRoles([Role.ADMIN, Role.LECTURER])
 @UseGuards(RolesGuard)
+@UseGuards(AuthGuard)
 @UseFilters(InternalServerErrorExceptionFilter)
 @Controller('archives')
 export class ArchiveController {
@@ -52,6 +51,7 @@ export class ArchiveController {
   @ApiQuery({ name: 'q', required: false })
   @ApiResponse(swaggerPaginateArchive)
   @UseInterceptors(ClassSerializerInterceptor)
+  @AccessRoles([Role.ADMIN, Role.LECTURER])
   @Get()
   paginate(@Query('page') page?: string, @Query('q') query?: string) {
     const parsedPage = !page ? 0 : parseInt(page);
@@ -68,6 +68,7 @@ export class ArchiveController {
   @UseInterceptors(FileInterceptor('file', archiveMulterOptions))
   @UseInterceptors(ClassSerializerInterceptor)
   @UseInterceptors(new DataMessageInterceptor('Archive added successfully'))
+  @AccessRoles([Role.ADMIN, Role.LECTURER])
   @Post()
   create(
     @Body() body: CreateArchiveDto,
@@ -87,6 +88,7 @@ export class ArchiveController {
   }
 
   @ApiResponse(swaggerRemoveArchive)
+  @AccessRoles([Role.ADMIN, Role.LECTURER])
   @Delete(':id')
   remove(@Param('id') id: string) {
     const parsedId = parseInt(id);
@@ -98,6 +100,7 @@ export class ArchiveController {
     return this.archiveService.remove(+id);
   }
 
+  @AccessRoles([Role.ADMIN, Role.LECTURER])
   @Get(':id/download')
   async download(@Param('id') id: string) {
     const parsedId = parseInt(id);
