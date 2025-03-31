@@ -233,6 +233,7 @@ export function LecturerForm({
           <FormGroup className="mb-4">
             <Label htmlFor="department">Department</Label>
             <MultiSelect
+              placeholderText="Select department"
               list={departments}
               onSelectItem={setSelectedDepartment}
               selectedItem={selectedDepartment}
@@ -439,6 +440,7 @@ export function StudentForm({
           <FormGroup className="mb-4">
             <Label htmlFor="department">Department</Label>
             <MultiSelect
+              placeholderText="Select department"
               list={departments}
               onSelectItem={setSelectedDepartment}
               selectedItem={selectedDepartment}
