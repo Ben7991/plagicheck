@@ -51,6 +51,7 @@ export class ArchiveController {
   @ApiQuery({ name: 'page', required: false })
   @ApiQuery({ name: 'q', required: false })
   @ApiResponse(swaggerPaginateArchive)
+  @UseInterceptors(ClassSerializerInterceptor)
   @Get()
   paginate(@Query('page') page?: string, @Query('q') query?: string) {
     const parsedPage = !page ? 0 : parseInt(page);
