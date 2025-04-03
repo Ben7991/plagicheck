@@ -25,9 +25,9 @@ describe('Button.tsx', () => {
     expect(button).toHaveClass('bg-[var(--error-100)]');
   });
 
-  it('should have class bg-[var(--gray-100)] when secondary variant is selected', () => {
+  it('should have class bg-white when secondary variant is selected', () => {
     render(<Button el="button" variant="secondary" />);
     const button = screen.getByRole('button');
-    expect(button).toHaveClass('bg-[var(--gray-100)]');
+    expect(button).toHaveClass('bg-white');
   });
 });
