@@ -25,6 +25,7 @@ describe('MultiSelect.tsx', () => {
   it('should render MultiSelect component', () => {
     render(
       <MultiSelect
+        placeholderText="Testing..."
         list={mockList}
         selectedItem={mockSelectedItem}
         onSelectItem={mockOnSelectItem}
@@ -37,6 +38,7 @@ describe('MultiSelect.tsx', () => {
   it('should not show the list when the button is not clicked', async () => {
     render(
       <MultiSelect
+        placeholderText="Testing..."
         list={mockList}
         selectedItem={mockSelectedItem}
         onSelectItem={mockOnSelectItem}
@@ -51,6 +53,7 @@ describe('MultiSelect.tsx', () => {
   it('should show the list when the button is clicked', async () => {
     render(
       <MultiSelect
+        placeholderText="Testing..."
         list={mockList}
         selectedItem={mockSelectedItem}
         onSelectItem={mockOnSelectItem}
@@ -66,6 +69,7 @@ describe('MultiSelect.tsx', () => {
   it('should select an item when a label is clicked', async () => {
     render(
       <MultiSelect
+        placeholderText="Testing..."
         list={mockList}
         selectedItem={mockSelectedItem}
         onSelectItem={mockOnSelectItem}
