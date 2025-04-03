@@ -17,6 +17,7 @@ export class ArchiveEntity {
 
   @ManyToOne(() => DepartmentEntity, (department) => department.archives)
   @JoinColumn({ name: 'departmentId' })
+  @Exclude()
   department: DepartmentEntity;
 
   @Column({

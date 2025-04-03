@@ -33,6 +33,9 @@ export class ArchiveService {
         where: {
           title: Like(`%${query}%`),
         },
+        order: {
+          id: 'desc',
+        },
       });
 
       return { count, data: archives };
