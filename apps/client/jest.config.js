@@ -11,4 +11,10 @@ export default {
     ],
   },
   preset: 'ts-jest',
+  moduleNameMapper: {
+    '^@util/(.*)$': '<rootDir>/src/util/$1',
+    '^@components/(.*)$': '<rootDir>/src/components/$1',
+    '^@store/(.*)$': '<rootDir>/src/store/$1',
+    '^@pages/(.*)$': '<rootDir>/src/pages/$1',
+  },
 };
