@@ -49,18 +49,23 @@ export class ArchiveController {
 
   @ApiQuery({ name: 'page', required: false })
   @ApiQuery({ name: 'q', required: false })
+  @ApiQuery({ name: 'filter', required: false })
   @ApiResponse(swaggerPaginateArchive)
   @UseInterceptors(ClassSerializerInterceptor)
   @AccessRoles([Role.ADMIN, Role.LECTURER])
   @Get()
-  paginate(@Query('page') page?: string, @Query('q') query?: string) {
+  paginate(
+    @Query('page') page?: string,
+    @Query('q') query?: string,
+    @Query('filter') filter?: string,
+  ) {
     const parsedPage = !page ? 0 : parseInt(page);
 
     if (Number.isNaN(parsedPage)) {
       throw new BadRequestException('Invalid page number');
     }
 
-    return this.archiveService.paginate(parsedPage, query ?? '');
+    return this.archiveService.paginate(parsedPage, query ?? '', filter ?? '');
   }
 
   @ApiConsumes('multipart/form-data')

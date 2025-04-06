@@ -18,30 +18,56 @@ import { ArchiveEntity } from 'src/entities/archive.entity';
 export class ArchiveService {
   constructor(private readonly dataSource: DataSource) {}
 
-  async paginate(page: number, query: string) {
-    const rows = 9;
+  async paginate(page: number, query: string, filter: string) {
     const archiveRepo = this.dataSource.getRepository(ArchiveEntity);
+    const documentTypeFilters = filter
+      ? (filter.split(',') as Array<DocumentType>)
+      : ([] as Array<DocumentType>);
     try {
       const count = await archiveRepo.count({
         where: {
           title: Like(`%${query}%`),
         },
       });
-      const archives = await archiveRepo.find({
-        skip: rows * page,
-        take: rows,
-        where: {
-          title: Like(`%${query}%`),
-        },
-        order: {
-          id: 'desc',
-        },
-      });
+      const archives = await this.getArchives(documentTypeFilters, query, page);
 
       return { count, data: archives };
     } catch (error) {
       throw new InternalServerErrorException((error as Error).message);
     }
+  }
+
+  private async getArchives(
+    documentTypeFilters: Array<DocumentType>,
+    query: string,
+    page: number,
+  ) {
+    const rows = 9;
+
+    if (documentTypeFilters.length === 0) {
+      return await this.dataSource
+        .getRepository(ArchiveEntity)
+        .createQueryBuilder('archives')
+        .where('title LIKE :title', {
+          title: `%${query}%`,
+        })
+        .take(rows)
+        .skip(page * rows)
+        .orderBy('id', 'DESC')
+        .getMany();
+    }
+
+    return await this.dataSource
+      .getRepository(ArchiveEntity)
+      .createQueryBuilder('archives')
+      .where('title LIKE :title AND document_type IN (:...filters)', {
+        title: `%${query}%`,
+        filters: documentTypeFilters,
+      })
+      .take(rows)
+      .skip(page * rows)
+      .orderBy('id', 'DESC')
+      .getMany();
   }
 
   async create(file: Express.Multer.File, departmentId: number) {
