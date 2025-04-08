@@ -116,6 +116,7 @@ const facultySlice = createSlice({
       state.data[existingFacultyIndex].departments = state.data[
         existingFacultyIndex
       ].departments.filter((item) => item.id !== action.payload.departmentId);
+      state.count--;
     },
   },
 });

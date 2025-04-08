@@ -32,6 +32,7 @@ const facultySlice = createSlice({
       state.data = state.data.filter(
         (lecturer) => lecturer.id !== action.payload,
       );
+      state.count--;
     },
   },
 });
