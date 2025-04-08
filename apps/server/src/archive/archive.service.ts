@@ -224,6 +224,10 @@ export class ArchiveService {
       );
       return fs.createReadStream(filePath);
     } catch (error) {
+      if (error instanceof BadRequestException) {
+        throw new BadRequestException((error as Error).message);
+      }
+
       throw new InternalServerErrorException((error as Error).message);
     }
   }
