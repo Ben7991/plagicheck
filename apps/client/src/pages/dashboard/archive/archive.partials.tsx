@@ -10,7 +10,7 @@ import { createArchive, getFilters } from './archive.util';
 import MultiSelect from '@components/molecules/multi-select/MultiSelect';
 import { Department } from '@util/types/department.type';
 import { getDepartments } from '../academic-division/academic-division.utils';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useSearchParams } from 'react-router-dom';
 
 export function ArchiveUploader({
   onSetAlertInfo,
@@ -130,11 +130,26 @@ export function ArchiveUploader({
 
 function FilterHandler() {
   const navigate = useNavigate();
+  const [searchParams] = useSearchParams();
   const [showFilters, setShowFilters] = useState(false);
 
   const [wordFilter, setWordFilter] = useState(false);
   const [pdfFilter, setPdfFilter] = useState(false);
   const [textFilter, setTextFilter] = useState(false);
+
+  useEffect(() => {
+    const filter = searchParams.get('filter');
+    const filters = filter?.split(',') ?? [];
+    filters.forEach((filter) => {
+      if (filter === 'WORD') {
+        setWordFilter(true);
+      } else if (filter === 'PDF') {
+        setPdfFilter(true);
+      } else if (filter === 'TEXT') {
+        setTextFilter(true);
+      }
+    });
+  }, [searchParams]);
 
   useEffect(() => {
     if (wordFilter || pdfFilter || textFilter) {
