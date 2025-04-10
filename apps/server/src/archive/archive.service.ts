@@ -204,7 +204,7 @@ export class ArchiveService {
     await fs.promises.unlink(filePath);
   }
 
-  async getFilePathToDownload(id: number) {
+  async getArchive(id: number) {
     const archiveRepo = this.dataSource.getRepository(ArchiveEntity);
 
     try {
@@ -216,13 +216,7 @@ export class ArchiveService {
         throw new BadRequestException('File to download does not exist');
       }
 
-      const filePath = path.join(
-        process.cwd(),
-        'uploads',
-        'archive',
-        existingFile.filePath,
-      );
-      return fs.createReadStream(filePath);
+      return existingFile;
     } catch (error) {
       if (error instanceof BadRequestException) {
         throw new BadRequestException((error as Error).message);

@@ -25,6 +25,8 @@ import {
   ApiQuery,
   ApiResponse,
 } from '@nestjs/swagger';
+import * as path from 'node:path';
+import * as fs from 'fs';
 
 import { archiveMulterOptions } from './archive.util';
 import { DataMessageInterceptor } from 'src/utils/interceptors/data-message.interceptor';
@@ -38,6 +40,7 @@ import { InternalServerErrorExceptionFilter } from 'src/internal-server-error-ex
 import { AccessRoles } from 'src/utils/decorators/acces-role.decorator';
 import { Role } from 'src/utils/enums/role.enum';
 import { RolesGuard } from 'src/utils/guards/roles.guard';
+import { DocumentType } from 'src/utils/enums/document-type.enum';
 
 @ApiBearerAuth()
 @UseGuards(RolesGuard)
@@ -114,7 +117,28 @@ export class ArchiveController {
       throw new BadRequestException('Archive to delete is not recognized');
     }
 
-    const file = await this.archiveService.getFilePathToDownload(+id);
-    return new StreamableFile(file);
+    const existingArchive = await this.archiveService.getArchive(+id);
+    const filePath = path.join(
+      process.cwd(),
+      'uploads',
+      'archive',
+      existingArchive.filePath,
+    );
+    const file = fs.createReadStream(filePath);
+    return new StreamableFile(file, {
+      type: this.getContentType(existingArchive.documentType),
+      disposition: `attachment;filename=${existingArchive.title}`,
+    });
+  }
+
+  private getContentType(documentType: DocumentType) {
+    switch (documentType) {
+      case DocumentType.PDF:
+        return 'application/pdf';
+      case DocumentType.TEXT:
+        return 'text/plain';
+      default:
+        return 'application/msword';
+    }
   }
 }
