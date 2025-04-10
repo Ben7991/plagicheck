@@ -4,7 +4,7 @@ import { Request } from 'express';
 import { Observable } from 'rxjs';
 
 import { UserEntity } from 'src/entities/user.entity';
-import { AccessRole } from '../decorators/acces-role.decorator';
+import { AccessRoles } from '../decorators/acces-role.decorator';
 
 @Injectable()
 export class RolesGuard implements CanActivate {
@@ -13,11 +13,11 @@ export class RolesGuard implements CanActivate {
   canActivate(
     context: ExecutionContext,
   ): boolean | Promise<boolean> | Observable<boolean> {
-    const role = this.reflector.get(AccessRole, context.getHandler());
+    const roles = this.reflector.get(AccessRoles, context.getHandler());
 
     const req = context.switchToHttp().getRequest<Request>();
     const user = req['user'] as UserEntity;
 
-    return user.role === role;
+    return roles.includes(user.role);
   }
 }

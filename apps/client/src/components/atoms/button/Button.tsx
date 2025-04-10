@@ -16,7 +16,7 @@ export default function Button(props: ButtonProps | AnchorProps): JSX.Element {
       break;
     case 'secondary':
       variantStyle =
-        'py-[10px] border border-[var(--gray-700)] bg-[var(--gray-100)] text-[var(--black-300)] hover:bg-[var(--gray-1000)] active:bg-[var(--gray-900)]';
+        'py-[10px] border border-[var(--gray-700)] bg-white text-[var(--black-300)] hover:bg-[var(--gray-1000)] active:bg-[var(--gray-900)]';
       break;
   }
 
@@ -38,7 +38,7 @@ export default function Button(props: ButtonProps | AnchorProps): JSX.Element {
   return (
     <button
       {...remainingProps}
-      className={`rounded-lg cursor-pointer ${className} ${variantStyle} disabled:opacity-20 disabled:cursor-not-allowed`}
+      className={`rounded-lg cursor-pointer ${className && className} ${variantStyle} disabled:opacity-20 disabled:cursor-not-allowed`}
     >
       {props.children}
     </button>

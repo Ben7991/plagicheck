@@ -9,7 +9,7 @@ import { MemoryRouter } from 'react-router-dom';
 import Login from './Login';
 import { FormEvent } from 'react';
 import { Provider } from 'react-redux';
-import { store } from '../../../store/store';
+import { store } from '@store/store';
 
 afterEach(cleanup);
 

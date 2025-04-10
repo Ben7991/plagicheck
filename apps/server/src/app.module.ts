@@ -15,6 +15,7 @@ import { FacultyModule } from './faculty/faculty.module';
 import { DepartmentModule } from './department/department.module';
 import { LecturerModule } from './lecturer/lecturer.module';
 import { StudentModule } from './student/student.module';
+import { ArchiveModule } from './archive/archive.module';
 import envConfig from './config/env.config';
 
 @Module({
@@ -49,6 +50,7 @@ import envConfig from './config/env.config';
     DepartmentModule,
     LecturerModule,
     StudentModule,
+    ArchiveModule,
   ],
   controllers: [AppController],
   providers: [AppService],

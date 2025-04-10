@@ -11,6 +11,7 @@ import { AvailabilityStatus } from 'src/utils/enums/availability-status.enum';
 import { Exclude } from 'class-transformer';
 import { LecturerEntity } from './lecturer.entity';
 import { StudentEntity } from './student.entity';
+import { ArchiveEntity } from './archive.entity';
 
 @Entity('departments')
 export class DepartmentEntity {
@@ -41,4 +42,7 @@ export class DepartmentEntity {
 
   @OneToMany(() => StudentEntity, (student) => student.department)
   students: StudentEntity[];
+
+  @OneToMany(() => ArchiveEntity, (archive) => archive.department)
+  archives: ArchiveEntity[];
 }

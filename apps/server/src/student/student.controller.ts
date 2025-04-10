@@ -27,7 +27,7 @@ import {
   swaggerUpdateStudent,
 } from './student.swagger';
 import { AuthGuard } from 'src/auth/auth.guard';
-import { AccessRole } from 'src/utils/decorators/acces-role.decorator';
+import { AccessRoles } from 'src/utils/decorators/acces-role.decorator';
 import { Role } from 'src/utils/enums/role.enum';
 import { RolesGuard } from 'src/utils/guards/roles.guard';
 
@@ -56,7 +56,7 @@ export class StudentController {
   @ApiResponse(swaggerCreateStudent)
   @UseInterceptors(ClassSerializerInterceptor)
   @UseInterceptors(new DataMessageInterceptor('Student added successfully'))
-  @AccessRole(Role.ADMIN)
+  @AccessRoles([Role.ADMIN])
   @UseGuards(RolesGuard)
   @Post()
   create(@Body(ValidationPipe) body: StudentDto) {
@@ -66,7 +66,7 @@ export class StudentController {
   @ApiResponse(swaggerUpdateStudent)
   @UseInterceptors(ClassSerializerInterceptor)
   @UseInterceptors(new DataMessageInterceptor('Student updated successfully'))
-  @AccessRole(Role.ADMIN)
+  @AccessRoles([Role.ADMIN])
   @UseGuards(RolesGuard)
   @Patch(':id')
   update(@Param('id') id: string, @Body(ValidationPipe) body: StudentDto) {
@@ -74,7 +74,7 @@ export class StudentController {
   }
 
   @ApiResponse(swaggerRemoveStudent)
-  @AccessRole(Role.ADMIN)
+  @AccessRoles([Role.ADMIN])
   @UseGuards(RolesGuard)
   @Delete(':id')
   remove(@Param('id') id: string) {
