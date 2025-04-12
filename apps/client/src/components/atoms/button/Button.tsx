@@ -26,7 +26,7 @@ export default function Button(props: ButtonProps | AnchorProps): JSX.Element {
       <Link
         to={props.href!}
         {...remainingProps}
-        className={`rounded-lg ${className} ${variantStyle} disabled:opacity-20 inline-block`}
+        className={`rounded-lg ${className} ${variantStyle} disabled:opacity-20`}
       >
         {props.children}
       </Link>
