@@ -29,7 +29,7 @@ export default function MultiSelect({
         {showList ? <CaretUp /> : <CaretDown />}
       </button>
       {showList && (
-        <ul className="absolute bg-white border border-[var(--gray-800)] rounded-lg shadow-lg p-4 w-full mt-1 left-0 space-y-2 max-h-[176px] overflow-y-auto">
+        <ul className="absolute bg-white border border-[var(--gray-800)] rounded-lg shadow-lg p-4 w-full mt-1 left-0 space-y-2 max-h-[176px] overflow-y-auto z-[5]">
           {list.map((item) => (
             <li key={item.id}>
               <label
