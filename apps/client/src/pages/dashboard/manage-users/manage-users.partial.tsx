@@ -25,7 +25,6 @@ import FormControl from '@components/atoms/form-elements/form-control/FormContro
 import FormFooter from '@components/atoms/form-elements/form-footer/FormFooter';
 import Button from '@components/atoms/button/Button';
 import SubPageHeader from '@components/organisms/page-header/SubPageHeader';
-import LeftArrowIcon from '@components/atoms/icons/LeftArrowIcon';
 import MainContent from '@components/atoms/main-content/MainContent';
 import Headline from '@components/atoms/headline/Headline';
 import { Department } from '@util/types/department.type';
@@ -46,6 +45,7 @@ import {
   removeStudent,
   updateStudent,
 } from '@store/slice/student/student.slice';
+import GoBack from '@components/molecules/go-back/GoBack';
 
 export function SubHeader({ currentTab, children }: SubHeaderProps) {
   return (
@@ -491,14 +491,7 @@ export function BulkUpload({ currentTab }: BulkUploadProps) {
         description={`Add ${entity} in bulk here`}
       />
       <MainContent>
-        <Link
-          to={`${MANAGE_USERS_ROOT_PATH}?tab=${currentTab}`}
-          className="inline-block py-2 px-4 hover:bg-gray-200 w-auto rounded-lg"
-        >
-          <span className="flex items-center gap-2">
-            <LeftArrowIcon /> Back
-          </span>
-        </Link>
+        <GoBack path={`${MANAGE_USERS_ROOT_PATH}?tab=${currentTab}`} />
 
         <Headline type="h2" className="mt-10 mb-6 xl:mb-10 2xl:mb-12">
           Bulk Upload for {entity}
