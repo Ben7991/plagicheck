@@ -1,5 +1,5 @@
 import { FormEvent, useState } from 'react';
-import { NavLink, useNavigate } from 'react-router-dom';
+import { NavLink, useLocation, useNavigate } from 'react-router-dom';
 import { GoDatabase } from 'react-icons/go';
 import { RxCounterClockwiseClock } from 'react-icons/rx';
 
@@ -30,6 +30,7 @@ import Alert from '../../molecules/alert/Alert';
 import { clearRememberMe } from '../../../pages/auth/login/login.util';
 
 export default function SideDrawer({ show, onHide }: SideDrawerProps) {
+  const { pathname } = useLocation();
   const [showLogoutModal, setShowLogoutModal] = useState(false);
   const [showDropDown, setShowDropDown] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
@@ -58,6 +59,8 @@ export default function SideDrawer({ show, onHide }: SideDrawerProps) {
     setIsLoading(false);
   };
 
+  const isCheckerLink = pathname.includes('checker');
+
   return (
     <>
       <aside
@@ -83,7 +86,7 @@ export default function SideDrawer({ show, onHide }: SideDrawerProps) {
             >
               <PlagiCheckIcon /> Plagiarism checker
             </button>
-            {showDropDown && (
+            {(showDropDown || isCheckerLink) && (
               <div className="flex flex-col ms-7 gap-1">
                 <NavLink
                   to="/dashboard/checker"
