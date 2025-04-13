@@ -1,4 +1,8 @@
-export default function ExportIcon() {
+type ExportIconProps = {
+  color: string;
+};
+
+export default function ExportIcon({ color }: ExportIconProps) {
   return (
     <svg
       width="24"
@@ -9,21 +13,21 @@ export default function ExportIcon() {
     >
       <path
         d="M13 11L21.2 2.79999"
-        stroke="#fff"
+        stroke={color}
         strokeWidth="1.5"
         strokeLinecap="round"
         strokeLinejoin="round"
       />
       <path
         d="M21.9992 6.8V2H17.1992"
-        stroke="#fff"
+        stroke={color}
         strokeWidth="1.5"
         strokeLinecap="round"
         strokeLinejoin="round"
       />
       <path
         d="M11 2H9C4 2 2 4 2 9V15C2 20 4 22 9 22H15C20 22 22 20 22 15V13"
-        stroke="#fff"
+        stroke={color}
         strokeWidth="1.5"
         strokeLinecap="round"
         strokeLinejoin="round"
